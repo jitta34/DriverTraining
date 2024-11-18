@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "114347162559",
+    "project_id": "one2one-pro",
+    "storage_bucket": "one2one-pro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114347162559:android:02782f1a35e3531a8c3f0a",
+        "android_client_info": {
+          "package_name": "com.onetoonepro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114347162559-olu15es0unlt8j2s2ranivoifc860ivo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onetoonepro",
+            "certificate_hash": "02d7b1429506caa05d4b6f40938e70e80d466874"
+          }
+        },
+        {
+          "client_id": "114347162559-c4j5r2v4cfs0qbhngp7h24p36vveu62k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl3tk62wGWW1xTGfgvRyPDRW1kLn5jARg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114347162559-c4j5r2v4cfs0qbhngp7h24p36vveu62k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
