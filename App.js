@@ -286,62 +286,38 @@ const HomeNavigator = () => {
   );
 };
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState(null); // Set initial state to null
-  // const [loading, setLoading] = useState(true);
+  const [initialRoute, setInitialRoute] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        await initConnection();
+    const checkUserStatus = async () => {
+      const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
 
-        if (Platform.OS === 'android') {
-          flushFailedPurchasesCachedAsPendingAndroid();
-        }
-      } catch (error) {
-        console.error('Error occurred during initilization', error.message);
+      if (userLoggedIn === 'true') {
+        setInitialRoute('Home');
+      } else {
+        setInitialRoute('SIGN IN');
       }
+      setLoading(false);
     };
 
-    init();
-
-    return () => {
-      endConnection();
-    };
+    checkUserStatus();
   }, []);
 
-  // useEffect(() => {
-  //   const checkUserStatus = async () => {
-  //     const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
-  //     const paymentCompleted = await AsyncStorage.getItem('paymentCompleted');
+  useEffect(() => {
+    if (!loading) {
+      SplashScreen.hide();
+    }
+  }, [loading]);
 
-  //     if (userLoggedIn === 'true') {
-  //       if (paymentCompleted === 'true') {
-  //         setInitialRoute('Home');
-  //       } else {
-  //         setInitialRoute('PaymentScreen');
-  //       }
-  //     } else {
-  //       setInitialRoute('SignupScreen');
-  //     }
-  //     setLoading(false);
-  //   };
+  if (loading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="darkblue" />
+      </View>
+    );
+  }
 
-  //   checkUserStatus();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!loading) {
-  //     SplashScreen.hide();
-  //   }
-  // }, [loading]);
-
-  // if (loading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ActivityIndicator size="large" color="darkblue" />
-  //     </View>
-  //   );
-  // }
   return (
     <StripeProvider publishableKey="pk_test_51P9pziDS51rv9vSETIN8B4jYyFlwGYUGygNrdFQPpq4PGkfn4wAQNVcQodzeymQbiEEGFGKaZTU1ivVLym3d8cZg00NTZl9KAu">
       <NavigationContainer>
@@ -351,7 +327,6 @@ const App = () => {
             component={LoginScreen}
             options={{headerShown: false}}
           />
-
           <Stack.Screen
             name="Paywall"
             component={Paywall}
