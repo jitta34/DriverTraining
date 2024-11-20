@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "114347162559",
     "project_id": "one2one-pro",
-    "storage_bucket": "one2one-pro.appspot.com"
+    "storage_bucket": "one2one-pro.firebasestorage.app"
   },
   "client": [
     {
