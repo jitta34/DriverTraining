@@ -1,14 +1,20 @@
-import {StyleSheet, Text, TouchableOpacity, View,  Image, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Calendar} from 'react-native-big-calendar';
 import moment from 'moment';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-const { width, height } = Dimensions.get('window');
-
+import {Menu, Provider} from 'react-native-paper';
+const {width, height} = Dimensions.get('window');
 
 const isFoldable = height >= 550 && height <= 790;
-
 
 export default function CalendarScreen({navigation, route}) {
   const [meetings, setMeetings] = useState([]);
@@ -19,8 +25,7 @@ export default function CalendarScreen({navigation, route}) {
   const [showMonthCalendar, setShowMonthCalendar] = useState(false);
   const [calendarMode, setCalendarMode] = useState('week');
   const [selectedDate, setSelectedDate] = useState(moment());
-
-
+  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     const user = auth().currentUser;
@@ -33,7 +38,7 @@ export default function CalendarScreen({navigation, route}) {
           ...documentSnapshot.data(),
           key: documentSnapshot.id,
         }));
-  
+
         setMeetings(meetings);
         const newData = meetings?.flatMap(item => {
           let clientsText = '';
@@ -45,7 +50,7 @@ export default function CalendarScreen({navigation, route}) {
               clientsText = clientNames.join(', ');
             }
           }
-  
+
           return [
             {
               title: clientsText,
@@ -61,27 +66,21 @@ export default function CalendarScreen({navigation, route}) {
         });
         setEvents(newData);
       });
-  
+
     return () => unsubscribe();
   }, [route.params?.refresh]);
-  
 
   console.log('meetings', meetings);
   console.log('eventss', events);
-
- 
 
   const convertTimeToISO = (dateString, time) => {
     const date = moment(dateString).format('YYYY-MM-DD');
     const combinedDateTimeString = `${date} ${time}`;
     const parsedDateTime = moment(combinedDateTimeString, 'YYYY-MM-DD hh:mm A');
     const isoFormat = parsedDateTime.format('YYYY-MM-DDTHH:mm:ss');
-  
+
     return isoFormat;
   };
-  
-
- 
 
   const event = [
     {
@@ -124,7 +123,7 @@ export default function CalendarScreen({navigation, route}) {
       key: event.key,
       title: event.meetingTitle,
       creator: event.creator,
-      description: event.description
+      description: event.description,
     };
     navigation.navigate('MeetingDetails', {
       meeting,
@@ -153,81 +152,111 @@ export default function CalendarScreen({navigation, route}) {
     setCalendarMode('week');
   };
 
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleViewChange = view => {
+    setCalendarMode(view);
+    closeMenu();
+  };
+
   return (
-    <View style={{flex: 1, paddingTop: 10, backgroundColor: 'white'}}>
-   
-         <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Image source={require('../assets/backbtn.png')} style={{ width: 25, height: 25, marginRight: 10 }} />
-        </TouchableOpacity>
-        <Text style={styles.header}>Calendar</Text>
-        <View style={styles.monthSelector}>
-        <TouchableOpacity
+    <Provider>
+      <View style={{flex: 1, paddingTop: 10, backgroundColor: 'white'}}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image
+              source={require('../assets/backbtn.png')}
+              style={{width: 25, height: 25, marginRight: 10}}
+            />
+          </TouchableOpacity>
+          <Text style={styles.header}>Calendar</Text>
+          <TouchableOpacity
             style={styles.monthButton}
             onPress={handleMonthPress}>
             <Text style={styles.monthButtonText}>{currentMonth}</Text>
           </TouchableOpacity>
+          <Menu
+            visible={menuVisible}
+            onDismiss={closeMenu}
+            anchor={
+              <TouchableOpacity onPress={openMenu}>
+                <Text style={styles.menuButtonText}>View</Text>
+              </TouchableOpacity>
+            }>
+            <Menu.Item onPress={() => handleViewChange('day')} title="1 Day" />
+            <Menu.Item
+              onPress={() => handleViewChange('3days')}
+              title="3 Days"
+            />
+            <Menu.Item
+              onPress={() => handleViewChange('week')}
+              title="7 Days"
+            />
+            <Menu.Item
+              onPress={() => handleViewChange('month')}
+              title="Month"
+            />
+          </Menu>
+        </View>
+        {showMonthCalendar && (
+          <View style={styles.monthCalendarContainer}>
+            <Calendar
+              events={[]}
+              height={300}
+              showAdjacentMonths={false}
+              mode={'month'}
+              bodyContainerStyle={styles.monthBodyContainerStyle}
+              onPressCell={handleMonthCalendarDateSelect}
+              onSwipeEnd={handleSwipe}
+              headerContainerStyle={styles.monthHeaderContainerStyle}
+              weekContainerStyle={styles.weekContainerStyle}
+              dateCellStyle={styles.dateCellStyle}
+            />
           </View>
-      </View>
-      {showMonthCalendar && (
-        <View style={styles.monthCalendarContainer}>
+        )}
+        <View style={{flex: 1}}>
           <Calendar
-            events={[]}
-            height={300}
-            showAdjacentMonths={false}
-            mode={'month'}
-            bodyContainerStyle={styles.monthBodyContainerStyle}
-            onPressCell={handleMonthCalendarDateSelect}
+            events={events}
+            height={600}
+            ampm={true}
+            date={selectedDate}
+            onPressEvent={handleEventPress}
+            swipeEnabled={true}
+            onPressCell={handleCellPress}
+            calendarContainerStyle={styles.containerStyle}
+            bodyContainerStyle={styles.bodyContainerStyle}
+            mode={calendarMode}
+            headerContainerStyle={styles.headerContainerStyle}
+            showWeekNumber={true}
             onSwipeEnd={handleSwipe}
-            headerContainerStyle={styles.monthHeaderContainerStyle}
-            weekContainerStyle={styles.weekContainerStyle}
-            dateCellStyle={styles.dateCellStyle}
+            weekNumberPrefix="Week"
+            allDayEventCellStyle={styles.allDayEventCellStyle}
           />
         </View>
-      )}
-      <View style={{flex: 1}}>
-        <Calendar
-          events={events}
-          height={600}
-          ampm={true}
-          date={selectedDate}
-          onPressEvent={handleEventPress}
-          swipeEnabled={true}
-          onPressCell={handleCellPress}
-          calendarContainerStyle={styles.containerStyle}
-          bodyContainerStyle={styles.bodyContainerStyle}
-          mode={calendarMode}
-          headerContainerStyle={styles.headerContainerStyle}
-          showWeekNumber={true}
-          onSwipeEnd={handleSwipe}
-          weekNumberPrefix="Week"
-          allDayEventCellStyle={styles.allDayEventCellStyle}
-        />
       </View>
-    </View>
+    </Provider>
   );
 }
 
 const styles = StyleSheet.create({
   containerStyle: {},
   headerContainerStyle: {
-    // backgroundColor: 'white',
     height: 70,
   },
 
-
   headerContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
   },
   header: {
-    
-    fontSize: isFoldable ? height * 0.0270: height * 0.0210,
+    fontSize: isFoldable ? height * 0.027 : height * 0.021,
     fontWeight: 'bold',
-    alignSelf:'center',
-    marginLeft: isFoldable ? height * 0.3030: height * 0.1210,
-    color:'black'
+    alignSelf: 'center',
+    color: 'black',
   },
   headerView: {
     marginTop: 10,
@@ -244,11 +273,11 @@ const styles = StyleSheet.create({
   bodyContainerStyle: {
     // backgroundColor: 'white',
   },
-  monthButton:{
+  monthButton: {
     marginLeft: '44%',
   },
   monthButtonText: {
-    fontSize: isFoldable ? height * 0.0200: height * 0.0170,
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
     color: 'gray',
   },
   monthCalendarContainer: {
@@ -278,5 +307,10 @@ const styles = StyleSheet.create({
   },
   weekContainerStyle: {
     backgroundColor: '#e0e0e0',
+  },
+  menuButtonText: {
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
+    color: 'gray',
+    marginLeft: 10,
   },
 });

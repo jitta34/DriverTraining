@@ -1,8 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image,Redirect, backHandler, Dimensions, Linking, KeyboardAvoidingView, ActivityIndicator, BackHandler } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation,  useFocusEffect  } from '@react-navigation/native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Image,
+  Redirect,
+  backHandler,
+  Dimensions,
+  Linking,
+  KeyboardAvoidingView,
+  ActivityIndicator,
+  BackHandler,
+} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import auth from '@react-native-firebase/auth';
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
@@ -20,14 +34,12 @@ import FormListTabNavigator from './FormListTabNavigator';
 import MeetingDetailsScreen from './MeetingDetailsScreen';
 import InstructionScreen from './InstructionScreen';
 
-
-
 // Get the screen's width and height
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const isFoldable = height >= 550 && height <= 790;
-console.log("Device height:", height);
-console.log("Is foldable:", isFoldable);
+console.log('Device height:', height);
+console.log('Is foldable:', isFoldable);
 
 const icons = {
   drawer: require('../assets/drawer3.png'),
@@ -39,17 +51,15 @@ const icons = {
   scheduleMeetings: require('../assets/calendar.png'),
   addButton: require('../assets/drawer.png'),
   search: require('../assets/search.png'), // assuming you have a search icon
-  instruction: require('../assets/unity.png')
+  instruction: require('../assets/unity.png'),
 };
 
 const cardItems = [
-  { id: 4, title: 'Schedule Meetings', icon: icons.scheduleMeetings },
-  { id: 3, title: 'Driving Test', icon: icons.driving },
- 
-  { id: 1, title: 'New Notes', icon: icons.newNotes },
-  { id: 2, title: 'Instruction Diagram', icon: icons.instruction },
-  
- 
+  {id: 4, title: 'Schedule Meetings', icon: icons.scheduleMeetings},
+  {id: 3, title: 'Driving Test', icon: icons.driving},
+
+  {id: 1, title: 'New Notes', icon: icons.newNotes},
+  {id: 2, title: 'Instruction Diagram', icon: icons.instruction},
 ];
 
 const Tab = createBottomTabNavigator();
@@ -76,52 +86,52 @@ const HomeScreenContent = () => {
   //       BackHandler.exitApp(); // Exit app if back button is pressed
   //       return true;
   //     };
-    
+
   //     const backHandler = BackHandler.addEventListener(
   //       'hardwareBackPress',
   //       backAction
   //     );
-    
+
   //     return () => backHandler.remove();
   //   }, [navigation])
   // );
-
-
 
   useEffect(() => {
     const backAction = () => {
       BackHandler.exitApp(); // Exit app if back button is pressed
       return true;
     };
-  
+
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
-  
+
     return () => backHandler.remove();
   }, []);
-  
 
-  const handleCardPress = (id) => {
+  const handleCardPress = id => {
     setSelectedCard(id);
     // Show loader
     setLoader(true);
     setTimeout(() => {
-      if (id === 1) { // assuming the id of 'New Notes' card is 1
+      if (id === 1) {
+        // assuming the id of 'New Notes' card is 1
         navigation.navigate('WriteNote'); // navigate to 'WriteNote'
-      } else if (id === 3) { // assuming the id of 'Collection' card is 3
+      } else if (id === 3) {
+        // assuming the id of 'Collection' card is 3
         navigation.navigate('UserDetailsScreen'); // navigate to 'Collection'
-      } else if (id === 2) { // assuming the id of 'Meet' card is 2
+      } else if (id === 2) {
+        // assuming the id of 'Meet' card is 2
         navigation.navigate('Instruction'); // navigate to 'Collection'
-      } else if (id === 4) { 
+      } else if (id === 4) {
         navigation.navigate('Calendar');
       }
       // Hide loader
       setLoader(false);
     }, 5); // assuming the delay is 2 seconds
   };
-  
+
   // useEffect(() => {
   //   const user = auth().currentUser;
   //   if (user) {
@@ -140,9 +150,8 @@ const HomeScreenContent = () => {
   //   }
   // }, []);
 
-
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((user) => {
+    const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
         firestore()
           .collection('users')
@@ -152,72 +161,78 @@ const HomeScreenContent = () => {
               const userData = documentSnapshot.data();
               setUserDetails(userData);
               if (userData.imageUri) {
-                setUserImage({ uri: userData.imageUri });
+                setUserImage({uri: userData.imageUri});
               }
             }
           });
       }
     });
-  
+
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
-  
   return (
     <View style={styles.container}>
       {/* Custom Header */}
-      <KeyboardAwareScrollView keyboardShouldPersistTaps='handled'>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Image source={icons.drawer} style={styles.icon} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>HOME</Text>
-      </View>
-      {/* Welcome Text */}
-      <Text  style={styles.welcomeText} > Welcome {userDetails.firstName}!</Text>
-      {/* Cards */}
-      <View style={styles.cardsContainer}>
-      {cardItems.map((item) => (
-  <TouchableOpacity
-    key={item.id}
-    style={[
-      styles.card,
-      { backgroundColor: selectedCard === item.id ? 'darkblue' : 'white' },
-    ]}
-    onPress={() => handleCardPress(item.id)}
-  >
-    {loader && selectedCard === item.id ? (
-      <ActivityIndicator size="large" color="#FFFFFF" /> // blue color loader
-    ) : (
-      <>
-        <Image
-          source={item.icon}
-          style={[
-            styles.cardIcon,
-            { tintColor: selectedCard === item.id ? 'white' : 'black' },
-          ]}
-        />
-        <Text style={{ color: selectedCard === item.id ? 'white' : 'black' }}>
-          {item.title}
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <Image source={icons.drawer} style={styles.icon} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>HOME</Text>
+        </View>
+        {/* Welcome Text */}
+        <Text style={styles.welcomeText}>
+          {' '}
+          Welcome {userDetails.firstName}!
         </Text>
-      </>
-    )}
-  </TouchableOpacity>
-))}
-      </View>
+        {/* Cards */}
+        <View style={styles.cardsContainer}>
+          {cardItems.map(item => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.card,
+                {
+                  backgroundColor:
+                    selectedCard === item.id ? 'darkblue' : 'white',
+                },
+              ]}
+              onPress={() => handleCardPress(item.id)}>
+              {loader && selectedCard === item.id ? (
+                <ActivityIndicator size="large" color="#FFFFFF" /> // blue color loader
+              ) : (
+                <>
+                  <Image
+                    source={item.icon}
+                    style={[
+                      styles.cardIcon,
+                      {tintColor: selectedCard === item.id ? 'white' : 'black'},
+                    ]}
+                  />
+                  <Text
+                    style={{
+                      color: selectedCard === item.id ? 'white' : 'black',
+                    }}>
+                    {item.title}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
       </KeyboardAwareScrollView>
     </View>
   );
 };
 
 const HomeScreen = () => {
-  
   return (
     <Tab.Navigator
-    screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -229,34 +244,39 @@ const HomeScreen = () => {
           } else if (route.name === 'Instruction') {
             iconName = focused ? icons.meet : icons.instruction;
           } else if (route.name === 'Meetings') {
-            iconName = focused ? icons.scheduleMeetings : icons.scheduleMeetings;
+            iconName = focused
+              ? icons.scheduleMeetings
+              : icons.scheduleMeetings;
           }
 
           // You can return any component that you like here!
-          return <Image source={iconName} style={{  width:  isFoldable ? height * 0.0250: height * 0.0230,
-            height: isFoldable ? height * 0.0270: height * 0.0230, tintColor: color }} />;
+          return (
+            <Image
+              source={iconName}
+              style={{
+                width: isFoldable ? height * 0.025 : height * 0.023,
+                height: isFoldable ? height * 0.027 : height * 0.023,
+                tintColor: color,
+              }}
+            />
+          );
         },
         tabBarActiveTintColor: 'darkblue',
         tabBarInactiveTintColor: 'black',
         tabBarStyle: [
           {
-            display: 'flex'
+            display: 'flex',
           },
-          null
-        ]
-      })}
->
-    <Tab.Screen name="Home" component={HomeScreenContent} />
-    <Tab.Screen name="Collection" component={CollectionScreen} />
-    <Tab.Screen name="Test Submitted" component={FormListScreen2} />
-    <Tab.Screen name="Instruction" component={InstructionScreen} />
-   
-</Tab.Navigator>
-
+          null,
+        ],
+      })}>
+      <Tab.Screen name="Home" component={HomeScreenContent} />
+      <Tab.Screen name="Collection" component={CollectionScreen} />
+      <Tab.Screen name="Test Submitted" component={FormListScreen2} />
+      <Tab.Screen name="Instruction" component={InstructionScreen} />
+    </Tab.Navigator>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -274,11 +294,11 @@ const styles = StyleSheet.create({
   icon: {
     // width: width * 0.0380,
     // height: height * 0.0359,
-    width:  isFoldable ? height * 0.0300: height * 0.0230,
-    height: isFoldable ? height * 0.0300: height * 0.0230,
+    width: isFoldable ? height * 0.03 : height * 0.023,
+    height: isFoldable ? height * 0.03 : height * 0.023,
   },
   headerTitle: {
-    fontSize: isFoldable ? height * 0.0300: height * 0.0250,
+    fontSize: isFoldable ? height * 0.03 : height * 0.025,
     // fontSize: width * 0.0350,
     alignSelf: 'center',
     marginLeft: width * 0.32,
@@ -286,7 +306,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     // fontSize: width * 0.035,
-    fontSize: isFoldable ? height * 0.0300: height * 0.0250,
+    fontSize: isFoldable ? height * 0.03 : height * 0.025,
     marginTop: height * 0.05,
     alignSelf: 'flex-start',
     marginLeft: width * 0.05,
@@ -310,17 +330,16 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.04,
     backgroundColor: 'white',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   cardIcon: {
-    width:  isFoldable ? height * 0.0300: height * 0.0230,
-    height: isFoldable ? height * 0.0300: height * 0.0230,
+    width: isFoldable ? height * 0.03 : height * 0.023,
+    height: isFoldable ? height * 0.03 : height * 0.023,
     marginBottom: height * 0.04,
   },
 });
-
 
 export default HomeScreen;
