@@ -1,15 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ScrollView, View, Text, Image, TextInput, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  Image,
+  TextInput,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 
+// const { width, height } = Dimensions.get('window');
 
-// const { width, height } = Dimensions.get('window'); 
-
-
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
-
 
 const images = [
   require('../instructionimages/first1.png'),
@@ -68,8 +74,6 @@ const images = [
   require('../instructionimages/ParallelPark1.png'),
 ];
 
-
-
 const imageNames = [
   'Basic Procedures- Part-1',
   'Basic Procedures- Part-2',
@@ -115,8 +119,8 @@ const imageNames = [
   'One Way Streets Part-2',
   'Zebra Crossings',
   'Light Controlled Crossings',
-  'Dual Carriageways Part-1', 
-  'Dual Carriageways Part-2', 
+  'Dual Carriageways Part-1',
+  'Dual Carriageways Part-2',
   'Motorways',
   'Rural Roads',
   'Turn In The Road',
@@ -130,80 +134,88 @@ const imageNames = [
 export default function InstructionScreen() {
   const [search, setSearch] = useState('');
   const scrollRef = useRef(null);
-  const refs = useRef(imageNames.reduce((acc, value) => {
-    acc[value] = React.createRef();
-    return acc;
-  }, {})).current;
+  const refs = useRef(
+    imageNames.reduce((acc, value) => {
+      acc[value] = React.createRef();
+      return acc;
+    }, {}),
+  ).current;
 
   useEffect(() => {
     const index = parseInt(search);
     if (!isNaN(index) && index >= 1 && index <= imageNames.length) {
-      refs[imageNames[index - 1]].current.measure((x, y, width, height, pageX, pageY) => {
-        scrollRef.current.scrollTo({ y: pageY, animated: true });
-      });
+      refs[imageNames[index - 1]].current.measure(
+        (x, y, width, height, pageX, pageY) => {
+          scrollRef.current.scrollTo({y: pageY, animated: true});
+        },
+      );
     } else if (refs[search]) {
       refs[search].current.measure((x, y, width, height, pageX, pageY) => {
-        scrollRef.current.scrollTo({ y: pageY, animated: true });
+        scrollRef.current.scrollTo({y: pageY, animated: true});
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView>
-      <ScrollView 
-        style={{ padding: width * 0.04, backgroundColor: '#e6fbff' }} 
-        ref={scrollRef}
-      >
-        <View style={{ backgroundColor: 'white', marginBottom: height * 0.015 }}>
-          {/* <Text style={{ fontSize: width * 0.06, marginBottom: height * 0.02, alignSelf: 'center', fontWeight: 'bold', color: 'black' }}>
-            Instruction Diagrams
-          </Text> */}
-            <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Image source={require('../assets/backbtn.png')} style={{ width: 25, height: 25, marginRight: 10 }} />
-        </TouchableOpacity>
-        <Text style={styles.header}>Instruction Diagrams</Text>
-      </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#f8f9fa'}}>
+      <ScrollView
+        style={{
+          paddingHorizontal: 20,
+        }}
+        ref={scrollRef}>
+        <View
+          style={{
+            marginBottom: height * 0.015,
+          }}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Image
+                source={require('../assets/backbtn.png')}
+                style={{width: 25, height: 25, marginRight: 10}}
+              />
+            </TouchableOpacity>
+            <Text style={styles.header}>Instruction Diagrams</Text>
+          </View>
 
           <TextInput
-            style={{
-              height: isFoldable ? height * 0.075 : height * 0.050,
-              borderColor: 'gray',
-              borderWidth: 0.5,
-              color: 'black',
-              marginBottom: height * 0.010, // Adjust as needed
-              borderRadius: 20,
-              paddingLeft: 10,
-              shadowColor: '#FFF',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 7,
-              fontSize: isFoldable ? height * 0.018 :height * 0.015,
-            }}
+            style={styles.searchInput}
             onChangeText={text => setSearch(text)}
             value={search}
             placeholder="Type 'Index Number' of Instruction Diagram to search"
-            placeholderTextColor='gray'
+            placeholderTextColor="gray"
           />
 
-          <Text style={{   fontSize: isFoldable ? height * 0.028 :height * 0.022, marginBottom: height * 0.02, alignSelf: 'center', fontWeight: 'bold', color: 'black' }}>Index</Text>
+          <Text style={styles.indexTitle}>Index</Text>
 
-          <View style={{ marginBottom: height * 0.04 }}>
+          <View style={styles.indexList}>
             {imageNames.map((name, index) => (
-              <Text style={{ color: 'black',fontSize: isFoldable ? height * 0.020 :height * 0.017,  }} key={index}>{`${index + 1}. ${name}`}</Text>
+              <Text style={styles.indexItem} key={index}>{`${
+                index + 1
+              }. ${name}`}</Text>
             ))}
           </View>
         </View>
 
         {images.map((image, index) => (
-          <View ref={refs[imageNames[index]]} key={index} style={{ marginBottom: height * 0.02, padding: 5, borderRadius: 10, backgroundColor: 'white' }}>
-            <Text style={{ fontSize: isFoldable ? height * 0.028 :height * 0.022, alignSelf: 'center', marginBottom: height * 0.015, marginTop: height * 0.015, color: 'black' }}>
-              {imageNames[index]}
-            </Text>
-            <Image source={image} style={{ width: isFoldable ? '100%':'90', height: isFoldable? height * 0.999:height * 0.54 }} resizeMode='cover' onError={(e) => console.log(`Failed to load image at index: ${index}, name: ${imageNames[index]}`, e.nativeEvent.error)} />
+          <View
+            ref={refs[imageNames[index]]}
+            key={index}
+            style={styles.imageCard}>
+            <Text style={styles.imageTitle}>{imageNames[index]}</Text>
+            <Image
+              source={image}
+              style={styles.image}
+              resizeMode="cover"
+              onError={e =>
+                console.log(
+                  `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
+                  e.nativeEvent.error,
+                )
+              }
+            />
           </View>
         ))}
       </ScrollView>
@@ -216,12 +228,71 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#007bff',
+    borderRadius: 10,
+    marginBottom: 10,
   },
   header: {
-    fontSize: isFoldable ? height * 0.030 :height * 0.025,
+    fontSize: isFoldable ? height * 0.03 : height * 0.025,
     fontWeight: 'bold',
-    alignSelf:'center',
-    marginLeft: isFoldable ? '23%': '12%',
-    color:'black'
+    color: 'white',
+    flex: 1,
+    textAlign: 'center',
   },
-})
+  searchInput: {
+    height: isFoldable ? height * 0.075 : height * 0.05,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    color: 'black',
+    marginHorizontal: 10,
+    marginBottom: height * 0.01,
+    borderRadius: 20,
+    paddingLeft: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    fontSize: isFoldable ? height * 0.018 : height * 0.015,
+    backgroundColor: 'white',
+  },
+  indexTitle: {
+    fontSize: isFoldable ? height * 0.028 : height * 0.022,
+    marginBottom: height * 0.02,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  indexList: {
+    marginBottom: height * 0.04,
+    paddingHorizontal: 10,
+  },
+  indexItem: {
+    color: 'black',
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
+    marginBottom: 5,
+  },
+  imageCard: {
+    marginBottom: height * 0.02,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  imageTitle: {
+    fontSize: isFoldable ? height * 0.028 : height * 0.022,
+    alignSelf: 'center',
+    marginBottom: height * 0.015,
+    marginTop: height * 0.015,
+    color: 'black',
+  },
+  image: {
+    width: isFoldable ? '100%' : '90%',
+    height: isFoldable ? height * 0.999 : height * 0.54,
+    borderRadius: 10,
+  },
+});
