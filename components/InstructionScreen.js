@@ -161,64 +161,66 @@ export default function InstructionScreen() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f8f9fa'}}>
-      <ScrollView
-        style={{
-          paddingHorizontal: 20,
-        }}
-        ref={scrollRef}>
-        <View
-          style={{
-            marginBottom: height * 0.015,
-          }}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Image
-                source={require('../assets/backbtn.png')}
-                style={{width: 25, height: 25, marginRight: 10}}
-              />
-            </TouchableOpacity>
-            <Text style={styles.header}>Instruction Diagrams</Text>
-          </View>
-
-          <TextInput
-            style={styles.searchInput}
-            onChangeText={text => setSearch(text)}
-            value={search}
-            placeholder="Type 'Index Number' of Instruction Diagram to search"
-            placeholderTextColor="gray"
-          />
-
-          <Text style={styles.indexTitle}>Index</Text>
-
-          <View style={styles.indexList}>
-            {imageNames.map((name, index) => (
-              <Text style={styles.indexItem} key={index}>{`${
-                index + 1
-              }. ${name}`}</Text>
-            ))}
-          </View>
+      <View style={{flex: 1}}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image
+              source={require('../assets/backbtn.png')}
+              style={{width: 25, height: 25, marginRight: 10}}
+            />
+          </TouchableOpacity>
+          <Text style={styles.header}>Instruction Diagrams</Text>
         </View>
 
-        {images.map((image, index) => (
+        <TextInput
+          style={styles.searchInput}
+          onChangeText={text => setSearch(text)}
+          value={search}
+          placeholder="Type 'Index Number' of Instruction Diagram to search"
+          placeholderTextColor="gray"
+        />
+
+        <ScrollView
+          style={{
+            paddingHorizontal: 20,
+          }}
+          ref={scrollRef}>
           <View
-            ref={refs[imageNames[index]]}
-            key={index}
-            style={styles.imageCard}>
-            <Text style={styles.imageTitle}>{imageNames[index]}</Text>
-            <Image
-              source={image}
-              style={styles.image}
-              resizeMode="cover"
-              onError={e =>
-                console.log(
-                  `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
-                  e.nativeEvent.error,
-                )
-              }
-            />
+            style={{
+              marginBottom: height * 0.015,
+            }}>
+            <Text style={styles.indexTitle}>Index</Text>
+
+            <View style={styles.indexList}>
+              {imageNames.map((name, index) => (
+                <Text style={styles.indexItem} key={index}>{`${
+                  index + 1
+                }. ${name}`}</Text>
+              ))}
+            </View>
           </View>
-        ))}
-      </ScrollView>
+
+          {images.map((image, index) => (
+            <View
+              ref={refs[imageNames[index]]}
+              key={index}
+              style={styles.imageCard}>
+              <Text style={styles.imageTitle}>{imageNames[index]}</Text>
+              <Image
+                source={image}
+                style={styles.image}
+                resizeMode="cover"
+                onError={e =>
+                  console.log(
+                    `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
+                    e.nativeEvent.error,
+                  )
+                }
+              />
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -229,7 +231,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: '#007bff',
-    borderRadius: 10,
     marginBottom: 10,
   },
   header: {
