@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
+import Signature from 'react-native-signature-canvas';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// const { width, height } = Dimensions.get('window');
-
+// Icon.loadFont();
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
 
@@ -133,7 +135,10 @@ const imageNames = [
 ];
 export default function InstructionScreen() {
   const [search, setSearch] = useState('');
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [color, setColor] = useState('#000000');
   const scrollRef = useRef(null);
+  const signatureRef = useRef(null);
   const refs = useRef(
     imageNames.reduce((acc, value) => {
       acc[value] = React.createRef();
@@ -154,10 +159,43 @@ export default function InstructionScreen() {
         scrollRef.current.scrollTo({y: pageY, animated: true});
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  }, [search, refs]);
 
   const navigation = useNavigation();
+
+  const handleClear = () => {
+    signatureRef.current.clearSignature();
+  };
+
+  const handleColorChange = newColor => {
+    setColor(newColor);
+    console.log(`Color changed to: ${newColor}`);
+    if (signatureRef.current) {
+      signatureRef.current.changePenColor(newColor);
+      signatureRef.current.draw();
+    }
+  };
+
+  const handleErase = () => {
+    signatureRef.current.erase();
+  };
+
+  const handleUndo = () => {
+    signatureRef.current.undo();
+  };
+
+  const handleRedo = () => {
+    signatureRef.current.redo();
+  };
+
+  console.log(height);
+
+  const style = `.m-signature-pad {box-shadow: none; border: none; } 
+              .m-signature-pad--body {border: none; height: ${
+                height * 0.7
+              }px; background: transparent}
+              .m-signature-pad--footer {display: none; margin: 0px;}
+              body,html {}`;
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f8f9fa'}}>
@@ -170,6 +208,12 @@ export default function InstructionScreen() {
             />
           </TouchableOpacity>
           <Text style={styles.header}>Instruction Diagrams</Text>
+          <TouchableOpacity onPress={() => setIsDrawing(!isDrawing)}>
+            <Image
+              source={require('../assets/pencil.png')}
+              style={{width: 25, height: 25, marginLeft: 10}}
+            />
+          </TouchableOpacity>
         </View>
 
         <TextInput
@@ -220,6 +264,63 @@ export default function InstructionScreen() {
             </View>
           ))}
         </ScrollView>
+
+        {isDrawing && (
+          <View style={styles.fullScreenOverlay}>
+            <Signature
+              overlayHeight={height * 0.8}
+              ref={signatureRef}
+              onOK={img => console.log(img)}
+              webStyle={style}
+              descriptionText="Draw here"
+              clearText="Clear"
+              confirmText="Save"
+              lineColor={color}
+              penColor={color}
+              androidLayerType="software"
+            />
+            <View style={styles.controls}>
+              <TouchableOpacity
+                onPress={handleClear}
+                style={styles.controlButton}>
+                <Icon name="clear" size={24} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleErase}
+                style={styles.controlButton}>
+                <IconM name="eraser" size={24} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleUndo}
+                style={styles.controlButton}>
+                <Icon name="undo" size={24} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleRedo}
+                style={styles.controlButton}>
+                <Icon name="redo" size={24} color="white" />
+              </TouchableOpacity>
+              <View style={styles.colorPicker}>
+                <TouchableOpacity
+                  onPress={() => handleColorChange('#FF0000')}
+                  style={[styles.colorButton, {backgroundColor: '#FF0000'}]}
+                />
+                <TouchableOpacity
+                  onPress={() => handleColorChange('#00FF00')}
+                  style={[styles.colorButton, {backgroundColor: '#00FF00'}]}
+                />
+                <TouchableOpacity
+                  onPress={() => handleColorChange('#0000FF')}
+                  style={[styles.colorButton, {backgroundColor: '#0000FF'}]}
+                />
+                <TouchableOpacity
+                  onPress={() => handleColorChange('#000000')}
+                  style={[styles.colorButton, {backgroundColor: '#000000'}]}
+                />
+              </View>
+            </View>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -295,5 +396,42 @@ const styles = StyleSheet.create({
     width: isFoldable ? '100%' : '90%',
     height: isFoldable ? height * 0.999 : height * 0.54,
     borderRadius: 10,
+  },
+  fullScreenOverlay: {
+    width: '100%',
+    height: '85%',
+    background: '#00000000',
+    zIndex: 1,
+  },
+  controls: {
+    position: 'absolute',
+    bottom: 20,
+    marginHorizontal: 20,
+    backgroundColor: '#00000000',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlButton: {
+    margin: 8,
+    padding: 8,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlText: {
+    color: 'white',
+  },
+  colorPicker: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 8,
+  },
+  colorButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginHorizontal: 5,
   },
 });
