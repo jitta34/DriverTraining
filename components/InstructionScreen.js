@@ -277,6 +277,9 @@ export default function InstructionScreen() {
               confirmText="Save"
               lineColor={color}
               penColor={color}
+              scrollable={true}
+              showsVerticalScrollIndicator={true}
+              backgroundColor="#00000000"
               androidLayerType="software"
             />
             <View style={styles.controls}>
@@ -301,22 +304,17 @@ export default function InstructionScreen() {
                 <Icon name="redo" size={24} color="white" />
               </TouchableOpacity>
               <View style={styles.colorPicker}>
-                <TouchableOpacity
-                  onPress={() => handleColorChange('#FF0000')}
-                  style={[styles.colorButton, {backgroundColor: '#FF0000'}]}
-                />
-                <TouchableOpacity
-                  onPress={() => handleColorChange('#00FF00')}
-                  style={[styles.colorButton, {backgroundColor: '#00FF00'}]}
-                />
-                <TouchableOpacity
-                  onPress={() => handleColorChange('#0000FF')}
-                  style={[styles.colorButton, {backgroundColor: '#0000FF'}]}
-                />
-                <TouchableOpacity
-                  onPress={() => handleColorChange('#000000')}
-                  style={[styles.colorButton, {backgroundColor: '#000000'}]}
-                />
+                {['#FF0000', '#00FF00', '#0000FF', '#000000'].map(c => (
+                  <TouchableOpacity
+                    key={c}
+                    onPress={() => handleColorChange(c)}
+                    style={[
+                      styles.colorButton,
+                      {backgroundColor: c},
+                      color === c && styles.selectedColor,
+                    ]}
+                  />
+                ))}
               </View>
             </View>
           </View>
@@ -433,5 +431,9 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     marginHorizontal: 5,
+  },
+  selectedColor: {
+    borderWidth: 2,
+    borderColor: '#007bff',
   },
 });
