@@ -139,14 +139,9 @@ const SignupScreen = () => {
   const handleGoogleSignup = async () => {
     setLoading(true);
     try {
-      // Perform Google Sign-In
       await GoogleSignin.hasPlayServices();
       const {idToken} = await GoogleSignin.signIn();
-
-      // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign in with the credential
       const userCredential = await auth().signInWithCredential(
         googleCredential,
       );
@@ -155,22 +150,22 @@ const SignupScreen = () => {
 
       // Save login status and payment status
       await AsyncStorage.setItem('userLoggedIn', 'true');
-      await AsyncStorage.setItem('paymentCompleted', 'false'); // Set initial payment status
+      await AsyncStorage.setItem('paymentCompleted', 'false');
 
-      // Assuming phoneNumber is a part of Google profile data or needs to be added manually by the user
       const parsedPhoneNumber = parsePhoneNumberFromString(phoneNumber, 'IN');
       const formattedPhoneNumber = parsedPhoneNumber
         ? parsedPhoneNumber.formatInternational()
         : '';
 
-      // Create customer via API
       const response = await fetch(`${API_URL}/create-customer`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email: userCredential.user.email}),
       });
 
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
       const data = await response.text();
       let customerId;
@@ -182,12 +177,12 @@ const SignupScreen = () => {
         return;
       }
 
-      if (!customerId) throw new Error('No customer ID returned');
+      if (!customerId) {
+        throw new Error('No customer ID returned');
+      }
 
-      // Save customerId in AsyncStorage
       await AsyncStorage.setItem('customerId', customerId);
 
-      // Add user data to Firestore
       await firestore().collection('users').doc(userCredential.user.uid).set({
         firstName: firstName,
         lastName: lastName,
@@ -198,7 +193,6 @@ const SignupScreen = () => {
 
       console.log('User added to Firestore');
 
-      // Navigate to PaymentScreen
       navigation.reset({
         index: 0,
         routes: [{name: 'Paywall'}],
@@ -356,18 +350,21 @@ const SignupScreen = () => {
 
       {/* Google Signup Button */}
       {/* <Text style={styles.or}>Or</Text> */}
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.googleButton}
-        onPress={handleGoogleSignup}
-      >
-        <View style={{marginLeft: isFoldable ? "17%":'10%', flexDirection:'row'}}>
-        <Image
-          source={require('../assets/google.png')}
-          style={styles.googleIcon}
-        />
-        <Text style={styles.googleButtonText}>Sign up with Google</Text>
+        onPress={handleGoogleSignup}>
+        <View
+          style={{
+            marginLeft: isFoldable ? '17%' : '10%',
+            flexDirection: 'row',
+          }}>
+          <Image
+            source={require('../assets/google.png')}
+            style={styles.googleIcon}
+          />
+          <Text style={styles.googleButtonText}>Sign up with Google</Text>
         </View>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </ScrollView>
   );
 };
