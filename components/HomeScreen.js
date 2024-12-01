@@ -52,14 +52,15 @@ const icons = {
   addButton: require('../assets/drawer.png'),
   search: require('../assets/search.png'), // assuming you have a search icon
   instruction: require('../assets/unity.png'),
+  progress: require('../assets/progress-report.png'), // Add a progress icon to your assets
 };
 
 const cardItems = [
   {id: 4, title: 'Schedule Meetings', icon: icons.scheduleMeetings},
   {id: 3, title: 'Driving Test', icon: icons.driving},
-
   {id: 1, title: 'New Notes', icon: icons.newNotes},
   {id: 2, title: 'Instruction Diagram', icon: icons.instruction},
+  {id: 5, title: 'Progress Report', icon: icons.progress}, // Add new card
 ];
 
 const Tab = createBottomTabNavigator();
@@ -68,6 +69,7 @@ const HomeScreenContent = () => {
   const [userDetails, setUserDetails] = useState({});
   const [selectedCard, setSelectedCard] = useState(null);
   const navigation = useNavigation();
+  const [userImage, setUserImage] = useState(null);
   const [loader, setLoader] = useState(false);
 
   // useFocusEffect(
@@ -126,29 +128,13 @@ const HomeScreenContent = () => {
         navigation.navigate('Instruction'); // navigate to 'Collection'
       } else if (id === 4) {
         navigation.navigate('Calendar');
+      } else if (id === 5) {
+        navigation.navigate('ProgressReport'); // Add navigation to new screen
       }
       // Hide loader
       setLoader(false);
     }, 5); // assuming the delay is 2 seconds
   };
-
-  // useEffect(() => {
-  //   const user = auth().currentUser;
-  //   if (user) {
-  //     firestore()
-  //       .collection('users')
-  //       .doc(user.uid)
-  //       .onSnapshot(documentSnapshot => {
-  //         if (documentSnapshot.exists) {
-  //           const userData = documentSnapshot.data();
-  //           setUserDetails(userData);
-  //           if (userData.imageUri) {
-  //             setUserImage({ uri: userData.imageUri });
-  //           }
-  //         }
-  //       });
-  //   }
-  // }, []);
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
@@ -204,13 +190,7 @@ const HomeScreenContent = () => {
                 <ActivityIndicator size="large" color="#FFFFFF" /> // blue color loader
               ) : (
                 <>
-                  <Image
-                    source={item.icon}
-                    style={[
-                      styles.cardIcon,
-                      {tintColor: selectedCard === item.id ? 'white' : 'black'},
-                    ]}
-                  />
+                  <Image source={item.icon} style={[styles.cardIcon]} />
                   <Text
                     style={{
                       color: selectedCard === item.id ? 'white' : 'black',
@@ -336,8 +316,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   cardIcon: {
-    width: isFoldable ? height * 0.03 : height * 0.023,
-    height: isFoldable ? height * 0.03 : height * 0.023,
+    width: isFoldable ? height * 0.05 : height * 0.04,
+    height: isFoldable ? height * 0.05 : height * 0.04,
     marginBottom: height * 0.04,
   },
 });

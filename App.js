@@ -58,14 +58,11 @@ import SendSmsScreen from './components/SendSmsScreen';
 import EditSmsScreen from './components/EditSmsScreen';
 import EditSmsTemplateScreen from './components/EditSmsTemplateScreen';
 import SmsTemplateScreen from './components/SmsTemplateScreen';
-
-import {
-  initConnection,
-  endConnection,
-  flushFailedPurchasesCachedAsPendingAndroid,
-} from 'react-native-iap';
 import Paywall from './src/screen/paywall';
 import RecipeDetail from './src/screen/RecipeDetail';
+import ProgressReportScreen from './components/ProgressReportScreen';
+import CreateProgressReportScreen from './components/CreateProgressReportScreen';
+import ProgressDetailsScreen from './components/ProgressDetailsScreen';
 
 const {width, height} = Dimensions.get('window');
 
@@ -536,6 +533,21 @@ const App = () => {
           <Stack.Screen
             name="Home"
             component={HomeNavigator}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProgressReport"
+            component={ProgressReportScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CreateProgressReport"
+            component={CreateProgressReportScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProgressDetails"
+            component={ProgressDetailsScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
