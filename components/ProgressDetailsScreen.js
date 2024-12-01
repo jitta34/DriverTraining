@@ -12,6 +12,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Picker} from '@react-native-picker/picker';
 
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
@@ -56,6 +57,8 @@ const ProgressDetailsScreen = ({navigation, route}) => {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const {reportId} = route.params;
+  const [previousReports, setPreviousReports] = useState([]);
+  const [selectedReportId, setSelectedReportId] = useState(reportId);
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -77,6 +80,32 @@ const ProgressDetailsScreen = ({navigation, route}) => {
 
     fetchReport();
   }, [reportId]);
+
+  useEffect(() => {
+    const fetchPreviousReports = async () => {
+      if (!report) {
+        return;
+      }
+
+      try {
+        const reportsSnapshot = await firestore()
+          .collection('progress_reports')
+          .where('driver_email', '==', report.driver_email)
+          .get();
+
+        const reports = reportsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPreviousReports(reports);
+      } catch (error) {
+        console.error('Error fetching previous reports:', error);
+      }
+    };
+
+    fetchPreviousReports();
+  }, [report, report?.driver_email]);
 
   const handleDelete = async () => {
     Alert.alert(
@@ -105,6 +134,27 @@ const ProgressDetailsScreen = ({navigation, route}) => {
         },
       ],
     );
+  };
+
+  const handleReportChange = async reportId => {
+    if (reportId === selectedReportId) {
+      return;
+    }
+
+    try {
+      const reportDoc = await firestore()
+        .collection('progress_reports')
+        .doc(reportId)
+        .get();
+
+      if (reportDoc.exists) {
+        setReport({id: reportDoc.id, ...reportDoc.data()});
+        setSelectedReportId(reportId);
+      }
+    } catch (error) {
+      console.error('Error changing report:', error);
+      Alert.alert('Error', 'Failed to load selected report');
+    }
   };
 
   if (loading) {
@@ -150,6 +200,27 @@ const ProgressDetailsScreen = ({navigation, route}) => {
               onPress={handleDelete}>
               <Icon name="delete" size={24} color="red" />
             </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>Previous Reports</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedReportId}
+              onValueChange={handleReportChange}
+              style={styles.reportPicker}
+              mode="dropdown">
+              {previousReports.map(report => (
+                <Picker.Item
+                  key={report.id}
+                  label={`${report.date_of_lesson
+                    .toDate()
+                    .toLocaleDateString()} - ${report.driver_name}`}
+                  value={report.id}
+                />
+              ))}
+            </Picker>
           </View>
         </View>
 
@@ -411,6 +482,30 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 14,
     color: 'black',
+  },
+  dropdownContainer: {
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'darkblue',
+    marginBottom: 8,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    marginLeft: 8,
+    backgroundColor: 'white',
+    overflow: 'hidden',
+  },
+  reportPicker: {
+    height: 48,
+    width: '100%',
   },
 });
 

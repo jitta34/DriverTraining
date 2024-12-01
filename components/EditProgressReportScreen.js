@@ -14,17 +14,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
+import {constants} from '../src/utils/constants';
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
-
-const SCORE_LABELS = {
-  1: 'Introduced',
-  2: 'Under Full Instruction',
-  3: 'Prompted',
-  4: 'Seldom Prompted',
-  5: 'Independent',
-};
 
 const ScoreSelector = ({label, value, onChange}) => (
   <View style={styles.scoreRow}>
@@ -35,7 +27,7 @@ const ScoreSelector = ({label, value, onChange}) => (
         onValueChange={onChange}
         style={styles.picker}
         mode="dropdown">
-        {Object.entries(SCORE_LABELS).map(([score, label]) => (
+        {Object.entries(constants.SCORE_LABELS).map(([score, label]) => (
           <Picker.Item
             key={score}
             label={`${score} - ${label}`}
@@ -326,10 +318,14 @@ const EditProgressReportScreen = ({navigation, route}) => {
             />
           </View>
 
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+
+        <View style={styles.fixedButtonContainer}>
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Update Report</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
 
         {showDatePicker && (
           <DateTimePicker
@@ -442,8 +438,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 32,
   },
   submitButtonText: {
     color: 'white',
@@ -456,6 +450,27 @@ const styles = StyleSheet.create({
     color: 'darkblue',
     marginTop: 20,
     marginBottom: 16,
+  },
+  bottomPadding: {
+    height: 80,
+  },
+  fixedButtonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
   },
 });
 

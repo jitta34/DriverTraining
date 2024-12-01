@@ -111,24 +111,6 @@ const CustomDrawerContent = props => {
     require('./assets/defaultimg.png'),
   );
 
-  // useEffect(() => {
-  //   const user = auth().currentUser;
-  //   if (user) {
-  //     firestore()
-  //       .collection('users')
-  //       .doc(user.uid)
-  //       .onSnapshot(documentSnapshot => {
-  //         if (documentSnapshot.exists) {
-  //           const userData = documentSnapshot.data();
-  //           setUserDetails(userData);
-  //           if (userData.imageUri) {
-  //             setUserImage({ uri: userData.imageUri });
-  //           }
-  //         }
-  //       });
-  //   }
-  // }, []);
-
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
@@ -160,31 +142,6 @@ const CustomDrawerContent = props => {
         props.navigation.navigate('SIGN IN');
       });
   };
-
-  // const handleLogout = async () => {
-  //   const user = auth().currentUser;
-  //   if (user) {
-  //     auth()
-  //       .signOut()
-  //       .then(async () => {
-  //         console.log('User signed out!');
-  //         await AsyncStorage.setItem('userLoggedIn', 'false');
-  //         props.navigation.navigate('SIGN IN');
-  //       });
-  //   } else {
-  //     console.log('No user is currently signed in');
-  //   }
-  // };
-
-  // const handleLogout = async () => {
-  //   auth()
-  //     .signOut()
-  //     .then(async () => {
-  //       console.log('User signed out!');
-  //       await AsyncStorage.setItem('userLoggedIn', 'false');
-  //       props.navigation.navigate('SIGN IN');
-  //     });
-  // };
 
   return (
     <View style={{flex: 1}}>
