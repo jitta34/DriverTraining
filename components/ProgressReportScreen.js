@@ -32,7 +32,6 @@ const ProgressReportScreen = ({navigation}) => {
             ...documentSnapshot.data(),
           });
         });
-        console.log(reportsList);
         setReports(reportsList);
         setLoading(false);
       });
