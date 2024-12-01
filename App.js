@@ -63,6 +63,7 @@ import RecipeDetail from './src/screen/RecipeDetail';
 import ProgressReportScreen from './components/ProgressReportScreen';
 import CreateProgressReportScreen from './components/CreateProgressReportScreen';
 import ProgressDetailsScreen from './components/ProgressDetailsScreen';
+import EditProgressReportScreen from './components/EditProgressReportScreen';
 
 const {width, height} = Dimensions.get('window');
 
@@ -548,6 +549,11 @@ const App = () => {
           <Stack.Screen
             name="ProgressDetails"
             component={ProgressDetailsScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="EditProgressReport"
+            component={EditProgressReportScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

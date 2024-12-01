@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -47,48 +47,12 @@ const ScoreSelector = ({label, value, onChange}) => (
   </View>
 );
 
-const CreateProgressReportScreen = ({navigation}) => {
-  const [formData, setFormData] = useState({
-    driver_name: '',
-    driver_email: '',
-    date_of_lesson: new Date(),
-    cockpit_checks: 1,
-    safety_checks: 1,
-    controls_and_instruments: 1,
-    moving_away_and_stopping: 1,
-    safe_positioning: 1,
-    mirrors_vision_and_use: 1,
-    signals: 1,
-    anticipation_and_planning: 1,
-    use_of_speed: 1,
-    other_traffic: {
-      meeting_traffic: 1,
-      crossing_traffic: 1,
-      overtaking: 1,
-    },
-    junctions: {
-      turn_left: 1,
-      turn_right: 1,
-      emerge: 1,
-    },
-    roundabouts: 1,
-    pedestrian_crossings: 1,
-    dual_carriageways: 1,
-    turning_the_vehicle_around: 1,
-    reversing: {
-      right_side_reverse: 1,
-      forward_bay_park: 1,
-      reverse_bay_park: 1,
-    },
-    parking: {
-      parallel_parking: 1,
-    },
-    emergency_stop: 1,
-    darkness: 1,
-    weather_conditions: 1,
-  });
-
+const EditProgressReportScreen = ({navigation, route}) => {
+  const {reportId, report} = route.params;
+  const [formData, setFormData] = useState(report);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  console.log(formData);
 
   const updateFormData = (field, value, subField = null) => {
     if (subField) {
@@ -116,19 +80,20 @@ const CreateProgressReportScreen = ({navigation}) => {
     try {
       await firestore()
         .collection('progress_reports')
-        .add({
+        .doc(reportId)
+        .update({
           ...formData,
-          created_at: firestore.FieldValue.serverTimestamp(),
+          updated_at: firestore.FieldValue.serverTimestamp(),
         });
 
-      Alert.alert('Success', 'Progress report created successfully', [
+      Alert.alert('Success', 'Progress report updated successfully', [
         {
           text: 'OK',
           onPress: () => navigation.goBack(),
         },
       ]);
     } catch (error) {
-      Alert.alert('Error', 'Failed to create progress report');
+      Alert.alert('Error', 'Failed to update progress report');
       console.error(error);
     }
   };
@@ -140,7 +105,7 @@ const CreateProgressReportScreen = ({navigation}) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={styles.header}>Create Progress Report</Text>
+          <Text style={styles.header}>Edit Progress Report</Text>
         </View>
 
         <ScrollView style={styles.formContainer}>
@@ -362,7 +327,7 @@ const CreateProgressReportScreen = ({navigation}) => {
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Create Report</Text>
+            <Text style={styles.submitButtonText}>Update Report</Text>
           </TouchableOpacity>
         </ScrollView>
 
@@ -494,4 +459,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateProgressReportScreen;
+export default EditProgressReportScreen;
