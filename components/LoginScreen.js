@@ -41,91 +41,12 @@ const LoginScreen = () => {
     });
   }, []);
 
-  // const handleGoogleSignup = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     await GoogleSignin.signOut();
-  //     const { idToken, user } = await GoogleSignin.signIn();
-
-  //     // Check if the user already exists in Firestore using the email
-  //     const userDoc = await firestore().collection('users').where('email', '==', user.email).get();
-
-  //     if (!userDoc.empty) {
-  //       const firebaseUserCredential = await auth().signInWithCredential(
-  //         auth.GoogleAuthProvider.credential(idToken)
-  //       );
-
-  //       const userData = userDoc.docs[0].data();
-  //       const customerId = userData.customerId;
-
-  //       if (customerId) {
-  //         // User exists and has a customerId, so navigate to Home
-  //         await AsyncStorage.setItem('userLoggedIn', 'true');
-  //         navigation.navigate('Home');
-  //         return;
-  //       } else {
-  //         // User exists but does not have a customerId, clean up Firestore
-  //         await firestore().collection('users').doc(userDoc.docs[0].id).delete();
-  //       }
-  //     }
-
-  //     // If user does not exist, proceed with signup
-  //     const firebaseUserCredential = await auth().signInWithCredential(
-  //       auth.GoogleAuthProvider.credential(idToken)
-  //     );
-
-  //     const response = await fetch(`${API_URL}/create-customer`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email: user.email }),
-  //     });
-
-  //     if (!response.ok) {
-  //       console.error('Response:', response);
-  //       throw new Error('Network response was not ok');
-  //     }
-
-  //     const data = await response.text();
-  //     let customerId;
-  //     try {
-  //       const json = JSON.parse(data);
-  //       customerId = json.customerId;
-  //     } catch (err) {
-  //       console.error('Failed to parse JSON:', err);
-  //       return;
-  //     }
-
-  //     if (!customerId) {
-  //       console.error('No customer ID returned');
-  //       return;
-  //     }
-
-  //     await AsyncStorage.setItem('customerId', customerId);
-  //     await firestore().collection('users').doc(firebaseUserCredential.user.uid).set({
-  //       firstName: user.givenName,
-  //       lastName: '',
-  //       email: user.email,
-  //       profile_picture: user.photo,
-  //       customerId: customerId,
-  //     }).then(async () => {
-  //       console.log('User added to Firestore');
-  //       await AsyncStorage.setItem('userLoggedIn', 'true');
-  //       navigation.navigate('PaymentScreen');
-  //     });
-  //   } catch (error) {
-  //     console.log('Error during sign-in:', error);
-  //   }
-  // };
-
   const handleGoogleSignup = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const {idToken, user} = await GoogleSignin.signIn();
 
-      // Check if the user already exists in Firestore using the email
       const userDoc = await firestore()
         .collection('users')
         .where('email', '==', user.email)
@@ -139,229 +60,32 @@ const LoginScreen = () => {
         const userData = userDoc.docs[0].data();
         const paymentCompleted = userData.paymentCompleted;
 
-        // Set user logged in status
         await AsyncStorage.setItem('userLoggedIn', 'true');
 
         console.log(userData);
 
         navigation.navigate('Home');
-        // if (paymentCompleted === true) {
-        // } else {
-        //   navigation.navigate('PaymentScreen');
-        // }
       } else {
-        // If user does not exist, proceed with signup and navigate to PaymentScreen
         const firebaseUserCredential = await auth().signInWithCredential(
           auth.GoogleAuthProvider.credential(idToken),
         );
 
-        // Proceed with creating customer and saving user data as before
-
-        // Create a new user in Firestore
         await firestore().collection('users').add({
           uid: firebaseUserCredential.user.uid,
           name: user.name,
           email: user.email,
-          paymentCompleted: false, // Assuming payment is not done at signup
+          paymentCompleted: false,
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
 
-        // Set user logged in status
         await AsyncStorage.setItem('userLoggedIn', 'true');
 
-        // Navigate to PaymentScreen
         navigation.navigate('SIGN UP');
       }
     } catch (error) {
       console.log('Error during sign-in:', error);
     }
   };
-
-  // const handleGoogleSignup = async () => {
-  //   // Handle Google Sign-up logic here
-  // };
-
-  // const handleLogin = () => {
-  //   if (email === '' || password === '') {
-  //     Alert.alert('Fields Empty', 'Please fill in the email and password fields', [{ text: 'OK' }], { cancelable: false });
-  //   } else {
-  //     setLoading(true);
-  //     auth().signInWithEmailAndPassword(email, password)
-  //       .then(async () => {
-  //         console.log('User signed in!');
-  //         setLoading(false);
-  //         await AsyncStorage.setItem('userLoggedIn', 'true');
-  //         navigation.navigate('Home');
-  //       })
-  //       .catch(error => {
-  //         setLoading(false);
-  //         let errorMessage = '';
-  //         if (error.code === 'auth/user-not-found') {
-  //           errorMessage = 'No user found with this email address!';
-  //         } else if (error.code === 'auth/wrong-password') {
-  //           errorMessage = 'Wrong password!';
-  //         } else {
-  //           errorMessage = error.message;
-  //         }
-  //         Alert.alert('Login Error', errorMessage, [{ text: 'OK' }], { cancelable: false });
-  //       });
-  //   }
-  // };
-
-  // const handleLogin = async () => {
-  //   if (email === '' || password === '') {
-  //     Alert.alert('Fields Empty', 'Please fill in the email and password fields', [{ text: 'OK' }], { cancelable: false });
-  //   } else {
-  //     setLoading(true);
-  //     try {
-  //       await auth().signInWithEmailAndPassword(email, password);
-
-  //       const user = auth().currentUser;
-  //       if (user) {
-  //         const userDoc = await firestore().collection('users').doc(user.uid).get();
-  //         if (userDoc.exists && userDoc.data().paymentCompleted) {
-  //           console.log('User signed in!');
-  //           await AsyncStorage.setItem('userLoggedIn', 'true');
-  //           navigation.navigate('Home');
-  //         } else {
-  //           Alert.alert('Payment Required', 'You need to complete the payment to access the app.');
-  //           auth().signOut();
-  //         }
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       let errorMessage = '';
-  //       if (error.code === 'auth/user-not-found') {
-  //         errorMessage = 'No user found with this email address!';
-  //       } else if (error.code === 'auth/wrong-password') {
-  //         errorMessage = 'Wrong password!';
-  //       } else {
-  //         errorMessage = error.message;
-  //       }
-  //       Alert.alert('Login Error', errorMessage, [{ text: 'OK' }], { cancelable: false });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
-
-  // const handleLogin = () => {
-  //   if (email === '' || password === '') {
-  //     Alert.alert(
-  //       'Fields Empty',
-  //       'Please fill in the email and password fields',
-  //       [
-  //         {text: 'OK', onPress: () => console.log('OK Pressed')}
-  //       ],
-  //       {cancelable: false}
-  //     );
-  //   } else {
-  //     setLoading(true);
-  //     auth()
-  //     .signInWithEmailAndPassword(email, password)
-  //     .then(async () => {
-  //       console.log('User signed in!');
-  //       setLoading(false);
-  //       await AsyncStorage.setItem('userLoggedIn', 'true');
-  //       navigation.navigate('Home');
-  //     }).catch(error => {
-  //         setLoading(false);
-  //         let errorMessage = '';
-  //         if (error.code === 'auth/user-not-found') {
-  //           errorMessage = 'No user found with this email address!';
-  //         } else if (error.code === 'auth/wrong-password') {
-  //           errorMessage = 'Wrong password!';
-  //         } else {
-  //           errorMessage = error.message;
-  //         }
-  //         Alert.alert(
-  //           'Login Error',
-  //           errorMessage,
-  //           [
-  //             {text: 'OK', onPress: () => console.log('OK Pressed')}
-  //           ],
-  //           {cancelable: false}
-  //         );
-  //       });
-  //   }
-  // };
-
-  // const handleLogin = () => {
-  //   if (email === '' || password === '') {
-  //     Alert.alert(
-  //       'Fields Empty',
-  //       'Please fill in the email and password fields',
-  //       [
-  //         {text: 'OK', onPress: () => console.log('OK Pressed')}
-  //       ],
-  //       {cancelable: false}
-  //     );
-  //   } else {
-  //     setLoading(true);
-  //     auth()
-  //     .signInWithEmailAndPassword(email, password)
-  //     .then(async () => {
-  //       console.log('User signed in!');
-  //       setLoading(false);
-  //       await AsyncStorage.setItem('userLoggedIn', 'true');
-
-  //       const paymentCompleted = await AsyncStorage.getItem('paymentCompleted');
-  //       if (paymentCompleted === 'true') {
-  //         navigation.navigate('Home');
-  //       } else {
-  //         navigation.navigate('PaymentScreen');
-  //       }
-  //     }).catch(error => {
-  //         setLoading(false);
-  //         let errorMessage = '';
-  //         if (error.code === 'auth/user-not-found') {
-  //           errorMessage = 'No user found with this email address!';
-  //         } else if (error.code === 'auth/wrong-password') {
-  //           errorMessage = 'Wrong password!';
-  //         } else {
-  //           errorMessage = error.message;
-  //         }
-  //         Alert.alert(
-  //           'Login Error',
-  //           errorMessage,
-  //           [
-  //             {text: 'OK', onPress: () => console.log('OK Pressed')}
-  //           ],
-  //           {cancelable: false}
-  //         );
-  //       });
-  //   }
-  // };
-  // const handleLogin = async () => {
-  //   if (email === '' || password === '') {
-  //     Alert.alert('Fields Empty', 'Please fill in the email and password fields', [{ text: 'OK', onPress: () => console.log('OK Pressed') }], { cancelable: false });
-  //   } else {
-  //     setLoading(true);
-  //     try {
-  //       await auth().signInWithEmailAndPassword(email, password);
-  //       console.log('User signed in!');
-  //       setLoading(false);
-  //       await AsyncStorage.setItem('userLoggedIn', 'true');
-  //       const paymentCompleted = await AsyncStorage.getItem('paymentCompleted');
-  //       if (paymentCompleted === 'true') {
-  //         navigation.navigate('Home');
-  //       } else {
-  //         navigation.navigate('SIGN UP');
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       let errorMessage = '';
-  //       if (error.code === 'auth/user-not-found') {
-  //         errorMessage = 'No user found with this email address!';
-  //       } else if (error.code === 'auth/wrong-password') {
-  //         errorMessage = 'Wrong password!';
-  //       } else {
-  //         errorMessage = error.message;
-  //       }
-  //       Alert.alert('Login Error', errorMessage, [{ text: 'OK', onPress: () => console.log('OK Pressed') }], { cancelable: false });
-  //     }
-  //   }
-  // };
 
   const handleLogin = async () => {
     if (email === '' || password === '') {
@@ -492,13 +216,36 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* <Text style={styles.or}>Or</Text> */}
-        {/* <TouchableOpacity onPress={handleGoogleSignup} style={styles.googleButton}>
-          <View style={{marginLeft: isFoldable ? "19%":'10%', flexDirection:'row'}}>
-          <Image source={require('../assets/google.png')} style={styles.googleIcon} />
-          <Text style={styles.googleText}>Continue with Google</Text>
+        <View style={styles.partition}>
+          <View style={styles.line} />
+          <View>
+            <Text
+              style={{
+                width: 50,
+                textAlign: 'center',
+                color: '#434343',
+              }}>
+              OR
+            </Text>
           </View>
-        </TouchableOpacity> */}
+          <View style={styles.line} />
+        </View>
+
+        <TouchableOpacity
+          onPress={handleGoogleSignup}
+          style={styles.googleButton}>
+          <View
+            style={{
+              marginLeft: isFoldable ? '19%' : '10%',
+              flexDirection: 'row',
+            }}>
+            <Image
+              source={require('../assets/google.png')}
+              style={styles.googleIcon}
+            />
+            <Text style={styles.googleText}>Continue with Google</Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -509,7 +256,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: width * 0.02,
-
+    paddingVertical: width * 0.08,
     backgroundColor: 'white',
   },
 
@@ -573,6 +320,18 @@ const styles = StyleSheet.create({
     right: width * 0.025,
     zIndex: 1,
   },
+
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#434343',
+  },
+  partition: {
+    marginHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
   forgotPassword: {
     textAlign: 'right',
     marginBottom: height * 0.002,
@@ -625,29 +384,30 @@ const styles = StyleSheet.create({
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 4,
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
     borderColor: '#ddd',
-    borderWidth: 0,
-    elevation: 2.5,
+    borderWidth: 1,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    padding: 10,
-    marginBottom: height * 0.055,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingVertical: 12,
+    marginBottom: height * 0.05,
+    width: '80%',
+    alignSelf: 'center',
   },
   googleIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     marginRight: 10,
-    alignSelf: 'center',
-    marginLeft: 56,
   },
   googleText: {
     color: '#000',
-    fontWeight: 'bold',
-    fontSize: isFoldable ? height * 0.02 : height * 0.017,
+    fontWeight: '600',
+    fontSize: isFoldable ? height * 0.02 : height * 0.018,
   },
   or: {
     textAlign: 'center',

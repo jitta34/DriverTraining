@@ -26,6 +26,7 @@ import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {parsePhoneNumberFromString} from 'libphonenumber-js';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {CardField, useStripe} from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -139,14 +140,9 @@ const SignupScreen = () => {
   const handleGoogleSignup = async () => {
     setLoading(true);
     try {
-      // Perform Google Sign-In
       await GoogleSignin.hasPlayServices();
       const {idToken} = await GoogleSignin.signIn();
-
-      // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign in with the credential
       const userCredential = await auth().signInWithCredential(
         googleCredential,
       );
@@ -155,22 +151,22 @@ const SignupScreen = () => {
 
       // Save login status and payment status
       await AsyncStorage.setItem('userLoggedIn', 'true');
-      await AsyncStorage.setItem('paymentCompleted', 'false'); // Set initial payment status
+      await AsyncStorage.setItem('paymentCompleted', 'false');
 
-      // Assuming phoneNumber is a part of Google profile data or needs to be added manually by the user
       const parsedPhoneNumber = parsePhoneNumberFromString(phoneNumber, 'IN');
       const formattedPhoneNumber = parsedPhoneNumber
         ? parsedPhoneNumber.formatInternational()
         : '';
 
-      // Create customer via API
       const response = await fetch(`${API_URL}/create-customer`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email: userCredential.user.email}),
       });
 
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
       const data = await response.text();
       let customerId;
@@ -182,12 +178,12 @@ const SignupScreen = () => {
         return;
       }
 
-      if (!customerId) throw new Error('No customer ID returned');
+      if (!customerId) {
+        throw new Error('No customer ID returned');
+      }
 
-      // Save customerId in AsyncStorage
       await AsyncStorage.setItem('customerId', customerId);
 
-      // Add user data to Firestore
       await firestore().collection('users').doc(userCredential.user.uid).set({
         firstName: firstName,
         lastName: lastName,
@@ -198,7 +194,6 @@ const SignupScreen = () => {
 
       console.log('User added to Firestore');
 
-      // Navigate to PaymentScreen
       navigation.reset({
         index: 0,
         routes: [{name: 'Paywall'}],
@@ -295,6 +290,11 @@ const SignupScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{margin: 10}}>
+        <Icon name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>SIGN UP</Text>
       </View>
@@ -354,20 +354,38 @@ const SignupScreen = () => {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.partition}>
+        <View style={styles.line} />
+        <View>
+          <Text
+            style={{
+              width: 50,
+              textAlign: 'center',
+              color: '#434343',
+            }}>
+            OR
+          </Text>
+        </View>
+        <View style={styles.line} />
+      </View>
+
       {/* Google Signup Button */}
       {/* <Text style={styles.or}>Or</Text> */}
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.googleButton}
-        onPress={handleGoogleSignup}
-      >
-        <View style={{marginLeft: isFoldable ? "17%":'10%', flexDirection:'row'}}>
-        <Image
-          source={require('../assets/google.png')}
-          style={styles.googleIcon}
-        />
-        <Text style={styles.googleButtonText}>Sign up with Google</Text>
+        onPress={handleGoogleSignup}>
+        <View
+          style={{
+            marginLeft: isFoldable ? '17%' : '10%',
+            flexDirection: 'row',
+          }}>
+          <Image
+            source={require('../assets/google.png')}
+            style={styles.googleIcon}
+          />
+          <Text style={styles.googleButtonText}>Sign up with Google</Text>
         </View>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -375,6 +393,7 @@ const SignupScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: width * 0.02,
     paddingVertical: width * 0.04,
     backgroundColor: 'white',
   },
@@ -391,6 +410,7 @@ const styles = StyleSheet.create({
     fontSize: isFoldable ? width * 0.045 : width * 0.06,
     marginBottom: height * 0.025,
     marginTop: height * 0.025,
+    marginHorizontal: 10,
     fontWeight: 'bold',
     color: '#434343',
     alignSelf: 'center',
@@ -438,6 +458,17 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: isFoldable ? width * 0.035 : width * 0.045,
   },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#434343',
+  },
+  partition: {
+    marginHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
   terms: {
     fontSize: isFoldable ? width * 0.025 : width * 0.035,
     color: 'black',
@@ -455,28 +486,30 @@ const styles = StyleSheet.create({
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-
-    borderRadius: 4,
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
     borderColor: '#ddd',
-    borderWidth: 0,
-    elevation: 2.5,
-
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    padding: 10,
-    marginBottom: height * 0.055,
+    borderWidth: 1,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingVertical: 12,
+    marginBottom: height * 0.05,
+    width: '80%',
+    alignSelf: 'center',
   },
   googleIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     marginRight: 10,
-    alignSelf: 'center',
-    marginLeft: 56,
   },
-  googleButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: isFoldable ? height * 0.024 : height * 0.025,
+  googleText: {
+    color: '#000',
+    fontWeight: '600',
+    fontSize: isFoldable ? height * 0.02 : height * 0.018,
   },
   or: {
     textAlign: 'center',
