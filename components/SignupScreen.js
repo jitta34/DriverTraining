@@ -26,6 +26,7 @@ import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {parsePhoneNumberFromString} from 'libphonenumber-js';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {CardField, useStripe} from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -289,6 +290,11 @@ const SignupScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{margin: 10}}>
+        <Icon name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>SIGN UP</Text>
       </View>
@@ -348,6 +354,21 @@ const SignupScreen = () => {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.partition}>
+        <View style={styles.line} />
+        <View>
+          <Text
+            style={{
+              width: 50,
+              textAlign: 'center',
+              color: '#434343',
+            }}>
+            OR
+          </Text>
+        </View>
+        <View style={styles.line} />
+      </View>
+
       {/* Google Signup Button */}
       {/* <Text style={styles.or}>Or</Text> */}
       <TouchableOpacity
@@ -372,6 +393,7 @@ const SignupScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: width * 0.02,
     paddingVertical: width * 0.04,
     backgroundColor: 'white',
   },
@@ -388,6 +410,7 @@ const styles = StyleSheet.create({
     fontSize: isFoldable ? width * 0.045 : width * 0.06,
     marginBottom: height * 0.025,
     marginTop: height * 0.025,
+    marginHorizontal: 10,
     fontWeight: 'bold',
     color: '#434343',
     alignSelf: 'center',
@@ -435,6 +458,17 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: isFoldable ? width * 0.035 : width * 0.045,
   },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#434343',
+  },
+  partition: {
+    marginHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
   terms: {
     fontSize: isFoldable ? width * 0.025 : width * 0.035,
     color: 'black',
@@ -452,28 +486,30 @@ const styles = StyleSheet.create({
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-
-    borderRadius: 4,
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
     borderColor: '#ddd',
-    borderWidth: 0,
-    elevation: 2.5,
-
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    padding: 10,
-    marginBottom: height * 0.055,
+    borderWidth: 1,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingVertical: 12,
+    marginBottom: height * 0.05,
+    width: '80%',
+    alignSelf: 'center',
   },
   googleIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     marginRight: 10,
-    alignSelf: 'center',
-    marginLeft: 56,
   },
-  googleButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: isFoldable ? height * 0.024 : height * 0.025,
+  googleText: {
+    color: '#000',
+    fontWeight: '600',
+    fontSize: isFoldable ? height * 0.02 : height * 0.018,
   },
   or: {
     textAlign: 'center',

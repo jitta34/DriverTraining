@@ -206,14 +206,29 @@ const LoginScreen = () => {
           {loading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text style={styles.signInText}>Sign In s</Text>
+            <Text style={styles.signInText}>Sign In</Text>
           )}
         </TouchableOpacity>
         <View style={styles.createAccountContainer}>
           <Text style={styles.createAccount}>Don't have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SIGN UP')}>
-            <Text style={styles.createAccountLink}> Create Account e</Text>
+            <Text style={styles.createAccountLink}> Create Account</Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.partition}>
+          <View style={styles.line} />
+          <View>
+            <Text
+              style={{
+                width: 50,
+                textAlign: 'center',
+                color: '#434343',
+              }}>
+              OR
+            </Text>
+          </View>
+          <View style={styles.line} />
         </View>
 
         <TouchableOpacity
@@ -241,7 +256,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: width * 0.02,
-
+    paddingVertical: width * 0.08,
     backgroundColor: 'white',
   },
 
@@ -305,6 +320,18 @@ const styles = StyleSheet.create({
     right: width * 0.025,
     zIndex: 1,
   },
+
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#434343',
+  },
+  partition: {
+    marginHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
   forgotPassword: {
     textAlign: 'right',
     marginBottom: height * 0.002,
@@ -357,29 +384,30 @@ const styles = StyleSheet.create({
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 4,
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
     borderColor: '#ddd',
-    borderWidth: 0,
-    elevation: 2.5,
+    borderWidth: 1,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    padding: 10,
-    marginBottom: height * 0.055,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingVertical: 12,
+    marginBottom: height * 0.05,
+    width: '80%',
+    alignSelf: 'center',
   },
   googleIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     marginRight: 10,
-    alignSelf: 'center',
-    marginLeft: 56,
   },
   googleText: {
     color: '#000',
-    fontWeight: 'bold',
-    fontSize: isFoldable ? height * 0.02 : height * 0.017,
+    fontWeight: '600',
+    fontSize: isFoldable ? height * 0.02 : height * 0.018,
   },
   or: {
     textAlign: 'center',
