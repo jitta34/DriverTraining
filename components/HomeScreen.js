@@ -33,6 +33,7 @@ import FormListScreen2 from './FormListScreen2';
 import FormListTabNavigator from './FormListTabNavigator';
 import MeetingDetailsScreen from './MeetingDetailsScreen';
 import InstructionScreen from './InstructionScreen';
+import HighwayCodeScreen from './HighwayCodeScreen';
 
 // Get the screen's width and height
 const {width, height} = Dimensions.get('window');
@@ -52,7 +53,8 @@ const icons = {
   addButton: require('../assets/drawer.png'),
   search: require('../assets/search.png'), // assuming you have a search icon
   instruction: require('../assets/unity.png'),
-  progress: require('../assets/progress-report.png'), // Add a progress icon to your assets
+  progress: require('../assets/progress-report.png'),
+  highwayCode: require('../assets/highway_code.jpeg'),
 };
 
 const cardItems = [
@@ -60,7 +62,8 @@ const cardItems = [
   {id: 3, title: 'Driving Test', icon: icons.driving},
   {id: 1, title: 'New Notes', icon: icons.newNotes},
   {id: 2, title: 'Instruction Diagram', icon: icons.instruction},
-  {id: 5, title: 'Progress Report', icon: icons.progress}, // Add new card
+  {id: 5, title: 'Progress Report', icon: icons.progress},
+  {id: 6, title: 'Highway Code', icon: icons.highwayCode},
 ];
 
 const Tab = createBottomTabNavigator();
@@ -114,26 +117,23 @@ const HomeScreenContent = () => {
 
   const handleCardPress = id => {
     setSelectedCard(id);
-    // Show loader
     setLoader(true);
     setTimeout(() => {
       if (id === 1) {
-        // assuming the id of 'New Notes' card is 1
-        navigation.navigate('WriteNote'); // navigate to 'WriteNote'
+        navigation.navigate('WriteNote');
       } else if (id === 3) {
-        // assuming the id of 'Collection' card is 3
-        navigation.navigate('UserDetailsScreen'); // navigate to 'Collection'
+        navigation.navigate('UserDetailsScreen');
       } else if (id === 2) {
-        // assuming the id of 'Meet' card is 2
-        navigation.navigate('Instruction'); // navigate to 'Collection'
+        navigation.navigate('Instruction');
       } else if (id === 4) {
         navigation.navigate('Calendar');
       } else if (id === 5) {
-        navigation.navigate('ProgressReport'); // Add navigation to new screen
+        navigation.navigate('ProgressReport');
+      } else if (id === 6) {
+        navigation.navigate('HighwayCode');
       }
-      // Hide loader
       setLoader(false);
-    }, 5); // assuming the delay is 2 seconds
+    }, 5);
   };
 
   useEffect(() => {
