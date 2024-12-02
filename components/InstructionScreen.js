@@ -216,59 +216,11 @@ export default function InstructionScreen() {
           </TouchableOpacity>
         </View>
 
-        <TextInput
-          style={styles.searchInput}
-          onChangeText={text => setSearch(text)}
-          value={search}
-          placeholder="Type 'Index Number' of Instruction Diagram to search"
-          placeholderTextColor="gray"
-        />
-
-        <ScrollView
-          style={{
-            paddingHorizontal: 20,
-          }}
-          ref={scrollRef}>
-          <View
-            style={{
-              marginBottom: height * 0.015,
-            }}>
-            <Text style={styles.indexTitle}>Index</Text>
-
-            <View style={styles.indexList}>
-              {imageNames.map((name, index) => (
-                <Text style={styles.indexItem} key={index}>{`${
-                  index + 1
-                }. ${name}`}</Text>
-              ))}
-            </View>
-          </View>
-
-          {images.map((image, index) => (
-            <View
-              ref={refs[imageNames[index]]}
-              key={index}
-              style={styles.imageCard}>
-              <Text style={styles.imageTitle}>{imageNames[index]}</Text>
-              <Image
-                source={image}
-                style={styles.image}
-                resizeMode="cover"
-                onError={e =>
-                  console.log(
-                    `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
-                    e.nativeEvent.error,
-                  )
-                }
-              />
-            </View>
-          ))}
-        </ScrollView>
-
-        {isDrawing && (
+        {isDrawing ? (
           <View style={styles.fullScreenOverlay}>
             <Signature
-              overlayHeight={height * 0.8}
+              bgHeight={height}
+              overlayHeight={height}
               ref={signatureRef}
               onOK={img => console.log(img)}
               webStyle={style}
@@ -277,7 +229,7 @@ export default function InstructionScreen() {
               confirmText="Save"
               lineColor={color}
               penColor={color}
-              scrollable={true}
+              scrollable={false}
               showsVerticalScrollIndicator={true}
               backgroundColor="#00000000"
               androidLayerType="software"
@@ -317,6 +269,57 @@ export default function InstructionScreen() {
                 ))}
               </View>
             </View>
+          </View>
+        ) : (
+          <View>
+            <TextInput
+              style={styles.searchInput}
+              onChangeText={text => setSearch(text)}
+              value={search}
+              placeholder="Type 'Index Number' of Instruction Diagram to search"
+              placeholderTextColor="gray"
+            />
+
+            <ScrollView
+              style={{
+                paddingHorizontal: 20,
+              }}
+              ref={scrollRef}>
+              <View
+                style={{
+                  marginBottom: height * 0.015,
+                }}>
+                <Text style={styles.indexTitle}>Index</Text>
+
+                <View style={styles.indexList}>
+                  {imageNames.map((name, index) => (
+                    <Text style={styles.indexItem} key={index}>{`${
+                      index + 1
+                    }. ${name}`}</Text>
+                  ))}
+                </View>
+              </View>
+
+              {images.map((image, index) => (
+                <View
+                  ref={refs[imageNames[index]]}
+                  key={index}
+                  style={styles.imageCard}>
+                  <Text style={styles.imageTitle}>{imageNames[index]}</Text>
+                  <Image
+                    source={image}
+                    style={styles.image}
+                    resizeMode="cover"
+                    onError={e =>
+                      console.log(
+                        `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
+                        e.nativeEvent.error,
+                      )
+                    }
+                  />
+                </View>
+              ))}
+            </ScrollView>
           </View>
         )}
       </View>
@@ -397,15 +400,13 @@ const styles = StyleSheet.create({
   },
   fullScreenOverlay: {
     width: '100%',
-    height: '85%',
+    height: '90%',
     background: '#00000000',
-    zIndex: 1,
+    // zIndex: 1,
   },
   controls: {
-    position: 'absolute',
-    bottom: 20,
     marginHorizontal: 20,
-    backgroundColor: '#00000000',
+    backgroundColor: '#ffffff',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

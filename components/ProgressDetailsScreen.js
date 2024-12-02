@@ -13,11 +13,15 @@ import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Picker} from '@react-native-picker/picker';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import FileViewer from 'react-native-file-viewer';
+import Share from 'react-native-share';
 
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
 
 const SCORE_LABELS = {
+  0: 'Not Covered',
   1: 'Introduced',
   2: 'Under Full Instruction',
   3: 'Prompted',
@@ -51,6 +55,10 @@ const getScoreColor = score => {
     default:
       return '#F0F0F0';
   }
+};
+
+const formatDateForFileName = date => {
+  return date.toDate().toISOString().split('T')[0];
 };
 
 const ProgressDetailsScreen = ({navigation, route}) => {
@@ -157,6 +165,196 @@ const ProgressDetailsScreen = ({navigation, route}) => {
     }
   };
 
+  const createPDF = async () => {
+    const convertCamelCaseToReadable = str => {
+      str = str.replace(/([A-Z])/g, ' $1');
+      return str.replace(/^./, str[0].toUpperCase());
+    };
+
+    const formatScoreSection = (label, value) => {
+      return `
+        <div style="margin: 10px 0;">
+          <strong>${label}:</strong> ${value} - ${SCORE_LABELS[value]}
+        </div>
+      `;
+    };
+
+    const formatNestedSection = (sectionName, data) => {
+      return `
+        <div style="margin: 15px 0;">
+          <h3 style="color: #2c3e50; margin-bottom: 10px;">${sectionName}</h3>
+          ${Object.entries(data)
+            .map(([key, value]) =>
+              formatScoreSection(convertCamelCaseToReadable(key), value),
+            )
+            .join('')}
+        </div>
+      `;
+    };
+
+    let options = {
+      html: `
+        <html>
+          <head>
+            <style>
+              body { 
+                font-family: Arial, sans-serif; 
+                padding: 20px;
+                color: #333;
+                line-height: 1.6;
+              }
+              h1 { 
+                color: #1a237e;
+                text-align: center;
+                margin-bottom: 30px;
+              }
+              h2 {
+                color: #1a237e;
+                margin-top: 20px;
+              }
+              .section {
+                margin: 20px 0;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+              }
+              .basic-info {
+                margin-bottom: 30px;
+              }
+              .score-item {
+                margin: 10px 0;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Progress Report</h1>
+            
+            <div class="section basic-info">
+              <h2>Basic Information</h2>
+              <p><strong>Driver Name:</strong> ${report.driver_name}</p>
+              <p><strong>Driver Email:</strong> ${report.driver_email}</p>
+              <p><strong>Date of Lesson:</strong> ${report.date_of_lesson
+                .toDate()
+                .toLocaleDateString()}</p>
+            </div>
+
+            <div class="section">
+              <h2>Basic Controls</h2>
+              ${formatScoreSection('Cockpit Checks', report.cockpit_checks)}
+              ${formatScoreSection('Safety Checks', report.safety_checks)}
+              ${formatScoreSection(
+                'Controls & Instruments',
+                report.controls_and_instruments,
+              )}
+              ${formatScoreSection(
+                'Moving Away & Stopping',
+                report.moving_away_and_stopping,
+              )}
+            </div>
+
+            <div class="section">
+              <h2>Driving Skills</h2>
+              ${formatScoreSection('Safe Positioning', report.safe_positioning)}
+              ${formatScoreSection(
+                'Mirrors Vision & Use',
+                report.mirrors_vision_and_use,
+              )}
+              ${formatScoreSection('Signals', report.signals)}
+              ${formatScoreSection(
+                'Anticipation & Planning',
+                report.anticipation_and_planning,
+              )}
+              ${formatScoreSection('Use of Speed', report.use_of_speed)}
+            </div>
+
+            <div class="section">
+              ${formatNestedSection('Traffic Management', report.other_traffic)}
+            </div>
+
+            <div class="section">
+              ${formatNestedSection('Junctions', report.junctions)}
+            </div>
+
+            <div class="section">
+              <h2>Road Features</h2>
+              ${formatScoreSection('Roundabouts', report.roundabouts)}
+              ${formatScoreSection(
+                'Pedestrian Crossings',
+                report.pedestrian_crossings,
+              )}
+              ${formatScoreSection(
+                'Dual Carriageways',
+                report.dual_carriageways,
+              )}
+            </div>
+
+            <div class="section">
+              <h2>Maneuvers</h2>
+              ${formatScoreSection(
+                'Turning Vehicle Around',
+                report.turning_the_vehicle_around,
+              )}
+              ${formatNestedSection('Reversing', report.reversing)}
+              ${formatNestedSection('Parking', report.parking)}
+            </div>
+
+            <div class="section">
+              <h2>Additional Skills</h2>
+              ${formatScoreSection('Emergency Stop', report.emergency_stop)}
+              ${formatScoreSection('Darkness', report.darkness)}
+              ${formatScoreSection(
+                'Weather Conditions',
+                report.weather_conditions,
+              )}
+            </div>
+          </body>
+        </html>`,
+      fileName: `Progress_Report_${report.driver_name.replace(
+        /[^a-zA-Z0-9]/g,
+        '_',
+      )}_${formatDateForFileName(report.date_of_lesson)}`,
+      directory: 'Documents',
+    };
+
+    try {
+      const file = await RNHTMLtoPDF.convert(options);
+      return file.filePath;
+    } catch (error) {
+      console.error('Error creating PDF:', error);
+      Alert.alert('Error', 'Failed to create PDF');
+      return null;
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      const filePath = await createPDF();
+      if (filePath) {
+        await FileViewer.open(filePath);
+        Alert.alert('Success', 'PDF downloaded and opened successfully');
+      }
+    } catch (error) {
+      console.error('Error handling download:', error);
+      Alert.alert('Error', 'Failed to download or open PDF');
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const filePath = await createPDF();
+      if (filePath) {
+        await Share.open({
+          url: `file://${filePath}`,
+          type: 'application/pdf',
+          title: 'Share Progress Report',
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing PDF:', error);
+      // Alert.alert('Error', 'Failed to share PDF');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -182,6 +380,14 @@ const ProgressDetailsScreen = ({navigation, route}) => {
           </TouchableOpacity>
           <Text style={styles.header}>Progress Details</Text>
           <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleDownload}>
+              <Icon name="file-download" size={24} color="darkblue" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
+              <Icon name="share" size={24} color="darkblue" />
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() =>

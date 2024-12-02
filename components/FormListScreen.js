@@ -1,20 +1,28 @@
-import React, { useState, useEffect, PermissionsAndroid } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Button, Image, BackHandler, Dimensions } from 'react-native';
+import React, {useState, useEffect, PermissionsAndroid} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Modal,
+  Button,
+  Image,
+  BackHandler,
+  Dimensions,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import FileViewer from 'react-native-file-viewer';
-import { Picker } from '@react-native-picker/picker';
-import { useRoute } from '@react-navigation/native';
+import {Picker} from '@react-native-picker/picker';
+import {useRoute} from '@react-navigation/native';
 
-
-  
 // const width = Dimensions.get('window').width;
 // const height = Dimensions.get('window').height;
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
-const FormListScreen = ({ navigation }) => {
-
+const FormListScreen = ({navigation}) => {
   const [forms, setForms] = useState([]);
   const route = useRoute();
   const [selectedForm, setSelectedForm] = useState(null);
@@ -22,8 +30,7 @@ const FormListScreen = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('Form List 2');
   const formListOptions = ['Form List 1', 'Form List 2', 'Form List 3'];
 
-
-  const handleFormDelete = async (id) => {
+  const handleFormDelete = async id => {
     try {
       await firestore().collection('driveForm2').doc(id).delete();
       console.log('Form deleted successfully');
@@ -32,9 +39,7 @@ const FormListScreen = ({ navigation }) => {
     }
   };
 
-  
-
-  const convertCamelCaseToReadable = (str) => {
+  const convertCamelCaseToReadable = str => {
     // Insert a space before all caps
     str = str.replace(/([A-Z])/g, ' $1');
 
@@ -42,9 +47,7 @@ const FormListScreen = ({ navigation }) => {
     return str.replace(/^./, str[0].toUpperCase());
   };
 
-
-  
-  const createPDF = async (formData) => {
+  const createPDF = async formData => {
     let options = {
       html: `
         <html>
@@ -78,30 +81,43 @@ const FormListScreen = ({ navigation }) => {
           </head>
           <body>
             <h1>Driving Test Form-2 Submission</h1>
-            ${formData.map(([key, value]) => {
-              if (typeof value === 'object' && value !== null) {
-                return `<p class="label">${convertCamelCaseToReadable(key)}:</p><p>${Object.entries(value).map(([subKey, subValue]) => `${convertCamelCaseToReadable(subKey)}: ${subValue}`).join(', ')}</p>`;
-              } else {
-                return `<p><strong class="label">${convertCamelCaseToReadable(key)}:</strong> ${value}</p>`;
-              }
-            }).join('')}
+            ${formData
+              .map(([key, value]) => {
+                if (typeof value === 'object' && value !== null) {
+                  return `<p class="label">${convertCamelCaseToReadable(
+                    key,
+                  )}:</p><p>${Object.entries(value)
+                    .map(
+                      ([subKey, subValue]) =>
+                        `${convertCamelCaseToReadable(subKey)}: ${subValue}`,
+                    )
+                    .join(', ')}</p>`;
+                } else {
+                  return `<p><strong class="label">${convertCamelCaseToReadable(
+                    key,
+                  )}:</strong> ${value}</p>`;
+                }
+              })
+              .join('')}
           </body>
         </html>`,
       fileName: 'Driving Test Form-2 Submission',
       directory: 'Documents',
     };
-  
+
     try {
       const file = await RNHTMLtoPDF.convert(options);
       console.log(file.filePath);
-  
+
       await FileViewer.open(file.filePath);
       console.log('PDF opened successfully');
     } catch (error) {
-      console.error('Error occurred while creating or opening the PDF: ', error);
+      console.error(
+        'Error occurred while creating or opening the PDF: ',
+        error,
+      );
     }
   };
-  
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -109,18 +125,21 @@ const FormListScreen = ({ navigation }) => {
       .onSnapshot(querySnapshot => {
         const forms = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          return { id: doc.id, name: data.name, formData: data.formData, fieldOrder: data.fieldOrder };
+          return {
+            id: doc.id,
+            name: data.name,
+            formData: data.formData,
+            fieldOrder: data.fieldOrder,
+          };
         });
         setForms(forms);
       });
-  
+
     return () => unsubscribe();
   }, [route.params?.forceRefresh]); // Add this line
 
- 
-
-  const handleFormDownload = (item) => {
-    const { formData, fieldOrder } = item;
+  const handleFormDownload = item => {
+    const {formData, fieldOrder} = item;
     const formDataArray = fieldOrder.map(key => [key, formData[key]]);
     createPDF(formDataArray);
   };
@@ -132,8 +151,8 @@ const FormListScreen = ({ navigation }) => {
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove();
@@ -144,17 +163,17 @@ const FormListScreen = ({ navigation }) => {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
-          title: "Storage Permission",
-          message: "This app needs access to your storage to download PDFs.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK"
-        }
+          title: 'Storage Permission',
+          message: 'This app needs access to your storage to download PDFs.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can save files");
+        console.log('You can save files');
       } else {
-        console.log("Storage permission denied");
+        console.log('Storage permission denied');
       }
     } catch (err) {
       console.warn(err);
@@ -165,19 +184,23 @@ const FormListScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.heading}>Driving Test Form Submissions</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.selectionBtn} onPress={() => navigation.navigate('FormList2')}>
+        <TouchableOpacity
+          style={styles.selectionBtn}
+          onPress={() => navigation.navigate('FormList2')}>
           <Text style={styles.selectionText}>Form-1 List</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.selectionBtn} onPress={() => navigation.navigate('FormList')}>
+        <TouchableOpacity
+          style={styles.selectionBtn}
+          onPress={() => navigation.navigate('FormList')}>
           <Text style={styles.selectionText}>Form-2 List</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.selectionBtn} onPress={() => navigation.navigate('FormList3')}>
+        <TouchableOpacity
+          style={styles.selectionBtn}
+          onPress={() => navigation.navigate('FormList3')}>
           <Text style={styles.selectionText}>Form-3 List</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.tableHeader}>
-        
-      </View>
+      <View style={styles.tableHeader} />
       <View style={styles.tableHeader}>
         <Text style={styles.headerCell1}>S. No.</Text>
         <Text style={styles.headerCell2}>Client Name</Text>
@@ -187,15 +210,25 @@ const FormListScreen = ({ navigation }) => {
       <FlatList
         data={forms}
         keyExtractor={item => item.id}
-        renderItem={({ item, index }) => (
+        renderItem={({item, index}) => (
           <View style={styles.row}>
             <Text style={styles.cell1}>{index + 1}</Text>
             <Text style={styles.cell2}>{item.name}</Text>
-            <TouchableOpacity style={styles.button} onPress={() => handleFormDownload(item)}>
-              <Image source={require('../assets/downloadicon.png')} style={styles.icon} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleFormDownload(item)}>
+              <Image
+                source={require('../assets/downloadicon.png')}
+                style={styles.icon}
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => handleFormDelete(item.id)}>
-              <Image source={require('../assets/delete1.png')} style={styles.icon1} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleFormDelete(item.id)}>
+              <Image
+                source={require('../assets/delete1.png')}
+                style={styles.icon1}
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -211,12 +244,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   heading: {
-    fontSize: isFoldable ? height * 0.032 :height * 0.025,  // 22/400
+    fontSize: isFoldable ? height * 0.032 : height * 0.025, // 22/400
     fontWeight: 'bold',
     marginBottom: height * 0.018, // 16/900
     textAlign: 'center',
     color: '#000080',
-    
   },
   tableHeader: {
     flexDirection: 'row',
@@ -229,28 +261,28 @@ const styles = StyleSheet.create({
     flex: 2,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'black'
+    color: 'black',
   },
   headerCell1: {
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'black',
-    fontSize: isFoldable ? height * 0.020 :height * 0.017, 
+    color: 'black',
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
   },
   headerCell2: {
     flex: 3,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'black',
-    fontSize: isFoldable ? height * 0.020 :height * 0.017, 
+    color: 'black',
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
   },
   headerCell3: {
     flex: 2,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'black',
-    fontSize: isFoldable ? height * 0.020 :height * 0.017, 
+    color: 'black',
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
   },
   row: {
     flexDirection: 'row',
@@ -265,17 +297,17 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     textAlign: 'center',
-    color:'black'
+    color: 'black',
   },
   cell1: {
     flex: 1,
     textAlign: 'center',
-    color:'black'
+    color: 'black',
   },
   cell2: {
     flex: 3,
     textAlign: 'center',
-    color:'black'
+    color: 'black',
   },
   button: {
     flex: 2,
@@ -283,12 +315,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width:isFoldable? width * 0.04:width * 0.06, // 24/400
-    height: isFoldable? height * 0.0206: height * 0.0266, // 24/900
+    width: isFoldable ? width * 0.04 : width * 0.06, // 24/400
+    height: isFoldable ? height * 0.0206 : height * 0.0266, // 24/900
   },
   icon1: {
-    width:isFoldable? width * 0.04:width * 0.06, // 24/400
-    height: isFoldable? height * 0.03206: height * 0.0266, // 24/900
+    width: isFoldable ? width * 0.04 : width * 0.06, // 24/400
+    height: isFoldable ? height * 0.03206 : height * 0.0266, // 24/900
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -299,7 +331,7 @@ const styles = StyleSheet.create({
     padding: height * 0.0077, // 7/900
     borderRadius: height * 0.0222,
     borderWidth: 0.7,
-    borderColor: "darkBlue", // 20/900
+    borderColor: 'darkBlue', // 20/900
     alignItems: 'center',
     marginTop: height * 0.0055, // 5/900
     width: width * 0.3, // 30% of window width
@@ -314,11 +346,9 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     color: '#000000', // White text
-    fontSize: isFoldable ? height * 0.020 :height * 0.017,  // 14/400
-    fontWeight: 'bold'
+    fontSize: isFoldable ? height * 0.02 : height * 0.017, // 14/400
+    fontWeight: 'bold',
   },
 });
-
-
 
 export default FormListScreen;
