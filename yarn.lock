@@ -6225,7 +6225,7 @@ react-native-paper@^5.12.3:
     color "^3.1.2"
     use-latest-callback "^0.1.5"
 
-react-native-pdf@^6.7.5:
+react-native-pdf@^6.7.2:
   version "6.7.5"
   resolved "https://registry.npmjs.org/react-native-pdf/-/react-native-pdf-6.7.5.tgz"
   integrity sha512-d1S76p2Vwax2iG+kTnjINiUMvpjtJJvtMiYwHRbgGczT8GJjtXH49YCWOd+HfnUAU29cB+knzsKGYoZBMQM8Ow==
