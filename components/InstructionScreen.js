@@ -8,12 +8,18 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import Signature from 'react-native-signature-canvas';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 // Icon.loadFont();
 const {width, height} = Dimensions.get('window');
@@ -146,6 +152,11 @@ export default function InstructionScreen() {
     }, {}),
   ).current;
 
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const slideAnim = useSharedValue(width);
+  const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
+  const [backgroundUrl, setBackgroundUrl] = useState(null);
+
   useEffect(() => {
     const index = parseInt(search);
     if (!isNaN(index) && index >= 1 && index <= imageNames.length) {
@@ -190,16 +201,40 @@ export default function InstructionScreen() {
 
   console.log(height);
 
+  const toggleBackgroundPicker = () => {
+    const newValue = !showBackgroundPicker;
+    setShowBackgroundPicker(newValue);
+    slideAnim.value = withTiming(newValue ? width - 100 : width, {
+      duration: 300,
+    });
+  };
+
+  const selectBackground = image => {
+    if (Platform.OS === 'web') {
+      const resolvedImage = Image.resolveAssetSource(image);
+      setBackgroundUrl(resolvedImage.uri || image);
+    } else {
+      const resolvedImage = Image.resolveAssetSource(image);
+      setBackgroundUrl(resolvedImage.uri);
+    }
+  };
+
   const style = `.m-signature-pad {box-shadow: none; border: none; } 
-              .m-signature-pad--body {border: none; height: ${
-                height * 0.7
-              }px; background: transparent}
+              .m-signature-pad--body {
+                border: none; 
+                height: ${height * 0.8}px; 
+                background-color: transparent;
+              }
               .m-signature-pad--footer {display: none; margin: 0px;}
               body,html {}`;
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{translateX: slideAnim.value}],
+  }));
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f8f9fa'}}>
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, position: 'relative'}}>
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <Image
@@ -219,7 +254,7 @@ export default function InstructionScreen() {
         {isDrawing ? (
           <View style={styles.fullScreenOverlay}>
             <Signature
-              bgHeight={height}
+              bgHeight={height * 0.8}
               overlayHeight={height}
               ref={signatureRef}
               onOK={img => console.log(img)}
@@ -233,8 +268,10 @@ export default function InstructionScreen() {
               showsVerticalScrollIndicator={true}
               backgroundColor="#00000000"
               androidLayerType="software"
+              bgWidth={width}
+              bgSrc={backgroundUrl}
             />
-            <View style={styles.controls}>
+            <View style={[styles.controls, {zIndex: 1001}]}>
               <TouchableOpacity
                 onPress={handleClear}
                 style={styles.controlButton}>
@@ -255,8 +292,13 @@ export default function InstructionScreen() {
                 style={styles.controlButton}>
                 <Icon name="redo" size={24} color="white" />
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={toggleBackgroundPicker}
+                style={styles.controlButton}>
+                <Icon name="image" size={24} color="white" />
+              </TouchableOpacity>
               <View style={styles.colorPicker}>
-                {['#FF0000', '#00FF00', '#0000FF', '#000000'].map(c => (
+                {['#FF0000', '#00FF00', '#000000'].map(c => (
                   <TouchableOpacity
                     key={c}
                     onPress={() => handleColorChange(c)}
@@ -269,6 +311,28 @@ export default function InstructionScreen() {
                 ))}
               </View>
             </View>
+
+            {showBackgroundPicker && (
+              <Animated.View style={[styles.backgroundPicker]}>
+                <ScrollView>
+                  {images.map((image, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        selectBackground(image);
+                        toggleBackgroundPicker();
+                      }}
+                      style={styles.backgroundThumbnail}>
+                      <Image
+                        source={image}
+                        style={styles.thumbnailImage}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </Animated.View>
+            )}
           </View>
         ) : (
           <View>
@@ -402,7 +466,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '90%',
     background: '#00000000',
-    // zIndex: 1,
+    position: 'relative',
   },
   controls: {
     marginHorizontal: 20,
@@ -436,5 +500,39 @@ const styles = StyleSheet.create({
   selectedColor: {
     borderWidth: 2,
     borderColor: '#007bff',
+  },
+  backgroundPicker: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    height: '100%',
+    width: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: -2,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 1000,
+    paddingVertical: 10,
+  },
+  backgroundThumbnail: {
+    width: 80,
+    height: 80,
+    margin: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: 'white',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
   },
 });
