@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StripeProvider} from '@stripe/stripe-react-native';
-import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {KeyboardAvoidingView, Platform, ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -67,6 +66,8 @@ import EditProgressReportScreen from './components/EditProgressReportScreen';
 import HighwayCodeScreen from './components/HighwayCodeScreen';
 
 const {width, height} = Dimensions.get('window');
+
+const splashGIF = require('./assets/splash.gif');
 
 const isFoldable = height >= 550 && height <= 900;
 
@@ -242,13 +243,13 @@ const HomeNavigator = () => {
   );
 };
 const App = () => {
+  const [showSplash, setShowSplash] = useState(Platform.OS === 'ios');
   const [initialRoute, setInitialRoute] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkUserStatus = async () => {
       const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
-
       if (userLoggedIn === 'true') {
         setInitialRoute('Home');
       } else {
@@ -261,15 +262,23 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!loading) {
-      SplashScreen.hide();
-    }
-  }, [loading]);
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
+  }, []);
 
   if (loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" color="darkblue" />
+      </View>
+    );
+  }
+
+  if (showSplash) {
+    return (
+      <View style={styles.splashContainer}>
+        <Image source={splashGIF} style={styles.backgroundVideo} />
       </View>
     );
   }
@@ -524,5 +533,19 @@ const App = () => {
     </StripeProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  backgroundVideo: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#007bff',
+  },
+  splashContainer: {
+    flex: 1,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default withIAPContext(App);
