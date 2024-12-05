@@ -12,6 +12,7 @@ import moment from 'moment';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {Menu, Provider} from 'react-native-paper';
+import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width, height} = Dimensions.get('window');
 
 const isFoldable = height >= 550 && height <= 790;
@@ -149,7 +150,6 @@ export default function CalendarScreen({navigation, route}) {
   const handleMonthCalendarDateSelect = date => {
     setSelectedDate(date);
     setShowMonthCalendar(false);
-    setCalendarMode('week');
   };
 
   const openMenu = () => setMenuVisible(true);
@@ -180,8 +180,8 @@ export default function CalendarScreen({navigation, route}) {
             visible={menuVisible}
             onDismiss={closeMenu}
             anchor={
-              <TouchableOpacity onPress={openMenu}>
-                <Text style={styles.menuButtonText}>View</Text>
+              <TouchableOpacity onPress={openMenu} style={styles.viewButton}>
+                <IconM name="calendar-month-outline" size={24} color="gray" />
               </TouchableOpacity>
             }>
             <Menu.Item onPress={() => handleViewChange('day')} title="1 Day" />
@@ -274,7 +274,8 @@ const styles = StyleSheet.create({
     // backgroundColor: 'white',
   },
   monthButton: {
-    marginLeft: '44%',
+    marginLeft: 'auto',
+    marginRight: 10,
   },
   monthButtonText: {
     fontSize: isFoldable ? height * 0.02 : height * 0.017,
@@ -311,6 +312,10 @@ const styles = StyleSheet.create({
   menuButtonText: {
     fontSize: isFoldable ? height * 0.02 : height * 0.017,
     color: 'gray',
+    marginLeft: 10,
+  },
+  viewButton: {
+    padding: 8,
     marginLeft: 10,
   },
 });
