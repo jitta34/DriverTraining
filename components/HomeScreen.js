@@ -34,6 +34,7 @@ import FormListTabNavigator from './FormListTabNavigator';
 import MeetingDetailsScreen from './MeetingDetailsScreen';
 import InstructionScreen from './InstructionScreen';
 import HighwayCodeScreen from './HighwayCodeScreen';
+import CalendarScreen from './CalendarScreen';
 
 // Get the screen's width and height
 const {width, height} = Dimensions.get('window');
@@ -48,22 +49,25 @@ const icons = {
   newNotes: require('../assets/notes.png'),
   meet: require('../assets/appointment.png'),
   collection: require('../assets/collection.png'),
-  driving: require('../assets/driving.png'),
-  scheduleMeetings: require('../assets/calendar.png'),
+  driving: require('../assets/mock.png'),
+  scheduleMeetings: require('../assets/calender.jpg'),
+  scheduleMeetings2: require('../assets/calendar.png'),
   addButton: require('../assets/drawer.png'),
   search: require('../assets/search.png'), // assuming you have a search icon
-  instruction: require('../assets/unity.png'),
+  instruction: require('../assets/images.jpg'),
+  instruction2: require('../assets/unity.png'),
   progress: require('../assets/progress-report.png'),
   highwayCode: require('../assets/highway_code.jpeg'),
+  video: require('../assets/video1.png'),
 };
 
 const cardItems = [
   {id: 4, title: 'Schedule Meetings', icon: icons.scheduleMeetings},
-  {id: 3, title: 'Driving Test', icon: icons.driving},
-  {id: 1, title: 'New Notes', icon: icons.newNotes},
-  {id: 2, title: 'Instruction Diagram', icon: icons.instruction},
+  {id: 3, title: 'Mock Tests', icon: icons.driving},
+  {id: 2, title: 'Instruction Diagrams', icon: icons.instruction},
   {id: 5, title: 'Progress Report', icon: icons.progress},
   {id: 6, title: 'Highway Code', icon: icons.highwayCode},
+  {id: 1, title: 'Video Tutorials', icon: icons.video},
 ];
 
 const Tab = createBottomTabNavigator();
@@ -222,11 +226,11 @@ const HomeScreen = () => {
           } else if (route.name === 'Test Submitted') {
             iconName = focused ? icons.newNotes : icons.newNotes;
           } else if (route.name === 'Instruction') {
-            iconName = focused ? icons.meet : icons.instruction;
+            iconName = focused ? icons.meet : icons.instruction2;
           } else if (route.name === 'Meetings') {
             iconName = focused
-              ? icons.scheduleMeetings
-              : icons.scheduleMeetings;
+              ? icons.scheduleMeetings2
+              : icons.scheduleMeetings2;
           }
 
           // You can return any component that you like here!
@@ -254,6 +258,7 @@ const HomeScreen = () => {
       <Tab.Screen name="Collection" component={CollectionScreen} />
       <Tab.Screen name="Test Submitted" component={FormListScreen2} />
       <Tab.Screen name="Instruction" component={InstructionScreen} />
+      <Tab.Screen name="Meetings" component={CalendarScreen} />
     </Tab.Navigator>
   );
 };
@@ -316,9 +321,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   cardIcon: {
-    width: isFoldable ? height * 0.05 : height * 0.04,
-    height: isFoldable ? height * 0.05 : height * 0.04,
-    marginBottom: height * 0.04,
+    width: isFoldable ? height * 0.08 : height * 0.07,
+    height: isFoldable ? height * 0.08 : height * 0.07,
+    marginBottom: height * 0.02,
   },
 });
 

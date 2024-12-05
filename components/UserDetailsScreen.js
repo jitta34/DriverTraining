@@ -15,6 +15,10 @@ const UserDetailsScreen = ({ navigation }) => {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleNewNotes = () => {
+    return navigation.navigate("WriteNote")
+  }
+
   const handleSubmit = async () => {
     // Validation checks
     if (!name || !email || !phone) {
@@ -77,6 +81,10 @@ const UserDetailsScreen = ({ navigation }) => {
         ) : (
           <Text style={styles.buttonText}>Submit</Text>
         )}
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleNewNotes} disabled={loading}>
+      <Text style={styles.buttonText}>New Notes</Text>
       </TouchableOpacity>
       </View>
       </SafeAreaView>
