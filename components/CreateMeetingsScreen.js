@@ -500,7 +500,7 @@ const handleCreateMeeting = async () => {
                   {team[0].name} and {team.length - 1} others
                 </Text>
               ) : (
-                <Text style={{color: 'black', fontSize: isFoldable ? height * 0.01700: height * 0.0160}}>
+                <Text style={{color: 'blue', fontSize: isFoldable ? height * 0.01700: height * 0.0160}}>
                   Add Clients Manually through Plus Button
                 </Text>
               )}
@@ -513,7 +513,7 @@ const handleCreateMeeting = async () => {
             <TouchableOpacity
               onPress={importContacts}
               style={styles.importButton}>
-              <Text style={{color: 'black', alignSelf: 'center', fontSize: isFoldable ? height * 0.01700: height * 0.0160}}>
+              <Text style={{color: 'blue', fontWeight: 'bold', alignSelf: 'center', fontSize: isFoldable ? height * 0.01700: height * 0.0160}}>
                 Import from contacts
               </Text>
             </TouchableOpacity>
