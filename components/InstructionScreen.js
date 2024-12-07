@@ -20,72 +20,162 @@ import Animated, {
   withTiming,
   useSharedValue,
 } from 'react-native-reanimated';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 
 // Icon.loadFont();
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
 
-const images = [
-  require('../newimages/pom.png'),
-  require('../newimages/cockpit.png'),
-  require('../newimages/mirrors.png'),
-  require('../newimages/signals.png'),
-  require('../newimages/moving.png'),
-  require('../newimages/parking.png'),
-  require('../newimages/emergingleft.png'),
-  require('../newimages/emergingright.png'),
-  require('../newimages/turningleft.png'),
-  require('../newimages/turningright.png'),
-  require('../newimages/otherjunctions.png'),
-  require('../newimages/crossrd.png'),
-  require('../newimages/cross-rds2.png'),
-  require('../newimages/lights.png'),
-  require('../newimages/roundaboutleft.png'),
-  require('../newimages/roundaboutahead.png'),
-  require('../newimages/roundaboutright.png'),
-  require('../newimages/spiral.png'),
-  require('../newimages/miniroundabout.png'),
-  require('../newimages/oneway.png'),
-  require('../newimages/ped.lights.png'),
-  require('../newimages/zebra.png'),
-  require('../newimages/dualcarriageway.png'),
-  require('../newimages/dualcarriageway2.png'),
-  require('../newimages/rightreverse.png'),
-  require('../newimages/forward.png'),
-  require('../newimages/reverse.png'),
-  require('../newimages/parallel.png'),
+const instructionDiagramDetails = [
+  {
+    name: 'POM',
+    image: require('../newimages/pom.png'),
+    description:
+      'Prepare, Observe, Move - A systematic approach to safe driving maneuvers.',
+  },
+  {
+    name: 'CockPit Drill',
+    image: require('../newimages/cockpit.png'),
+    description:
+      'Essential checks before starting: Seat, Steering, Seatbelt, Switches, Mirrors.',
+  },
+  {
+    name: 'Mirrors',
+    image: require('../newimages/mirrors.png'),
+    description:
+      'Regular mirror checks using MSM routine (Mirrors, Signal, Maneuver).',
+  },
+  {
+    name: 'Signals',
+    image: require('../newimages/signals.png'),
+    description:
+      'Regular signal checks using MSM routine (Mirrors, Signal, Maneuver).',
+  },
+  {
+    name: 'Moving Off',
+    image: require('../newimages/moving.png'),
+    description: 'Step-by-step guide for moving off safely.',
+  },
+  {
+    name: 'Parking on Left',
+    image: require('../newimages/parking.png'),
+    description: 'Step-by-step guide for parking on the left side of the road.',
+  },
+  {
+    name: 'Emerging Left',
+    image: require('../newimages/emergingleft.png'),
+    description: 'Step-by-step guide for emerging from a left turn.',
+  },
+  {
+    name: 'Emerging Right',
+    image: require('../newimages/emergingright.png'),
+    description: 'Step-by-step guide for emerging from a right turn.',
+  },
+  {
+    name: 'Turning Left',
+    image: require('../newimages/turningleft.png'),
+    description: 'Step-by-step guide for turning left safely.',
+  },
+  {
+    name: 'Turning Right',
+    image: require('../newimages/turningright.png'),
+    description: 'Step-by-step guide for turning right safely.',
+  },
+  {
+    name: 'Other Junctions',
+    image: require('../newimages/otherjunctions.png'),
+    description: 'Step-by-step guide for navigating other types of junctions.',
+  },
+  {
+    name: 'Cross Roads',
+    image: require('../newimages/crossrd.png'),
+    description: 'Step-by-step guide for crossing roads safely.',
+  },
+  {
+    name: 'Cross Roads-2',
+    image: require('../newimages/cross-rds2.png'),
+    description: 'Step-by-step guide for crossing roads safely.',
+  },
+  {
+    name: 'Traffic Lights',
+    image: require('../newimages/lights.png'),
+    description: 'Step-by-step guide for navigating traffic lights safely.',
+  },
+  {
+    name: 'Roundabout Left',
+    image: require('../newimages/roundaboutleft.png'),
+    description: 'Step-by-step guide for navigating a roundabout safely.',
+  },
+  {
+    name: 'Roundabout Ahead',
+    image: require('../newimages/roundaboutahead.png'),
+    description: 'Step-by-step guide for navigating a roundabout safely.',
+  },
+  {
+    name: 'Roundabout Right',
+    image: require('../newimages/roundaboutright.png'),
+    description: 'Step-by-step guide for navigating a roundabout safely.',
+  },
+  {
+    name: 'Spiral Roundabout',
+    image: require('../newimages/spiral.png'),
+    description:
+      'Step-by-step guide for navigating a spiral roundabout safely.',
+  },
+  {
+    name: 'Mini-Roundabout',
+    image: require('../newimages/miniroundabout.png'),
+    description: 'Step-by-step guide for navigating a mini roundabout safely.',
+  },
+  {
+    name: 'Oneway Street',
+    image: require('../newimages/oneway.png'),
+    description: 'Step-by-step guide for navigating a oneway street safely.',
+  },
+  {
+    name: 'Pedestrian Crossings',
+    image: require('../newimages/ped.lights.png'),
+    description:
+      'Step-by-step guide for navigating pedestrian crossings safely.',
+  },
+  {
+    name: 'Zebra Crossing',
+    image: require('../newimages/zebra.png'),
+    description: 'Step-by-step guide for navigating zebra crossings safely.',
+  },
+  {
+    name: 'Dual Carriageway',
+    image: require('../newimages/dualcarriageway.png'),
+    description: 'Step-by-step guide for navigating a dual carriageway safely.',
+  },
+  {
+    name: 'Dual Carriageway-2',
+    image: require('../newimages/dualcarriageway2.png'),
+    description: 'Step-by-step guide for navigating a dual carriageway safely.',
+  },
+  {
+    name: 'Right Side Reverse',
+    image: require('../newimages/rightreverse.png'),
+    description: 'Step-by-step guide for reversing on the right side safely.',
+  },
+  {
+    name: 'Forward Bay Park',
+    image: require('../newimages/forward.png'),
+    description: 'Step-by-step guide for parking in a forward bay park safely.',
+  },
+  {
+    name: 'Reverse Bay Park',
+    image: require('../newimages/reverse.png'),
+    description: 'Step-by-step guide for parking in a reverse bay park safely.',
+  },
+  {
+    name: 'Parellel Park',
+    image: require('../newimages/parallel.png'),
+    description:
+      'Step-by-step guide for parallel parking between two vehicles.',
+  },
 ];
 
-const imageNames = [
-  'POM',
-  'CockPit Drill',
-  'Mirrors',
-  'Signals',
-  'Moving Off',
-  'Parking on Left',
-  'Emerging Left',
-  'Emerging Right',
-  'Turning Left',
-  'Turning Right',
-  'Other Junctions',
-  'Cross Roads',
-  'Cross Roads-2',
-  'Traffic Lights',
-  'Roundabout Left',
-  'Roundabout Ahead',
-  'Roundabout Right',
-  'Spiral Roundabout',
-  'Mini-Roundabout',
-  'Oneway Street',
-  'Pedestrian Crossings',
-  'Zebra Crossing',
-  'Dual Carriageway',
-  'Dual Carriageway-2',
-  'Right Side Reverse',
-  'Forward Bay Park',
-  'Reverse Bay Park',
-  'Parellel Park',
-];
 export default function InstructionScreen() {
   const [search, setSearch] = useState('');
   const [isDrawing, setIsDrawing] = useState(false);
@@ -93,8 +183,8 @@ export default function InstructionScreen() {
   const scrollRef = useRef(null);
   const signatureRef = useRef(null);
   const refs = useRef(
-    imageNames.reduce((acc, value) => {
-      acc[value] = React.createRef();
+    instructionDiagramDetails.reduce((acc, item) => {
+      acc[item.name] = React.createRef();
       return acc;
     }, {}),
   ).current;
@@ -106,8 +196,12 @@ export default function InstructionScreen() {
 
   useEffect(() => {
     const index = parseInt(search);
-    if (!isNaN(index) && index >= 1 && index <= imageNames.length) {
-      refs[imageNames[index - 1]].current.measure(
+    if (
+      !isNaN(index) &&
+      index >= 1 &&
+      index <= instructionDiagramDetails.length
+    ) {
+      refs[instructionDiagramDetails[index - 1].name].current.measure(
         (x, y, width, height, pageX, pageY) => {
           scrollRef.current.scrollTo({y: pageY, animated: true});
         },
@@ -156,12 +250,12 @@ export default function InstructionScreen() {
     });
   };
 
-  const selectBackground = image => {
+  const selectBackground = item => {
     if (Platform.OS === 'web') {
-      const resolvedImage = Image.resolveAssetSource(image);
-      setBackgroundUrl(resolvedImage.uri || image);
+      const resolvedImage = Image.resolveAssetSource(item.image);
+      setBackgroundUrl(resolvedImage.uri || item.image);
     } else {
-      const resolvedImage = Image.resolveAssetSource(image);
+      const resolvedImage = Image.resolveAssetSource(item.image);
       setBackgroundUrl(resolvedImage.uri);
     }
   };
@@ -178,6 +272,10 @@ export default function InstructionScreen() {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{translateX: slideAnim.value}],
   }));
+
+  const scrollToTop = () => {
+    scrollRef.current.scrollTo({y: 0, animated: true});
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f8f9fa'}}>
@@ -262,16 +360,16 @@ export default function InstructionScreen() {
             {showBackgroundPicker && (
               <Animated.View style={[styles.backgroundPicker]}>
                 <ScrollView>
-                  {images.map((image, index) => (
+                  {instructionDiagramDetails.map((item, index) => (
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        selectBackground(image);
+                        selectBackground(item);
                         toggleBackgroundPicker();
                       }}
                       style={styles.backgroundThumbnail}>
                       <Image
-                        source={image}
+                        source={item.image}
                         style={styles.thumbnailImage}
                         resizeMode="contain"
                       />
@@ -282,7 +380,7 @@ export default function InstructionScreen() {
             )}
           </View>
         ) : (
-          <View>
+          <View style={{position: 'relative'}}>
             <TextInput
               style={styles.searchInput}
               onChangeText={text => setSearch(text)}
@@ -291,9 +389,15 @@ export default function InstructionScreen() {
               placeholderTextColor="gray"
             />
 
+            <TouchableOpacity
+              style={styles.scrollToTopButton}
+              onPress={scrollToTop}>
+              <IconFA name="arrow-up" size={24} color="white" />
+            </TouchableOpacity>
             <ScrollView
               style={{
                 paddingHorizontal: 20,
+                marginBottom: 60,
               }}
               ref={scrollRef}>
               <View
@@ -303,31 +407,52 @@ export default function InstructionScreen() {
                 <Text style={styles.indexTitle}>Index</Text>
 
                 <View style={styles.indexList}>
-                  {imageNames.map((name, index) => (
-                    <Text style={styles.indexItem} key={index}>{`${
-                      index + 1
-                    }. ${name}`}</Text>
+                  {instructionDiagramDetails.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        refs[item.name].current.measure(
+                          (x, y, width, height, pageX, pageY) => {
+                            scrollRef.current.scrollTo({
+                              y: pageY,
+                              animated: true,
+                            });
+                          },
+                        );
+                      }}>
+                      <Text style={styles.indexItem}>
+                        {`${index + 1}. ${item.name}`}
+                      </Text>
+                    </TouchableOpacity>
                   ))}
                 </View>
               </View>
 
-              {images.map((image, index) => (
+              {instructionDiagramDetails.map((item, index) => (
                 <View
-                  ref={refs[imageNames[index]]}
+                  ref={refs[item.name]}
                   key={index}
                   style={styles.imageCard}>
-                  <Text style={styles.imageTitle}>{imageNames[index]}</Text>
+                  <Text style={styles.imageTitle}>
+                    {' '}
+                    {`${index + 1}. ${item.name}`}
+                  </Text>
                   <Image
-                    source={image}
+                    source={item.image}
                     style={styles.image}
                     resizeMode="cover"
                     onError={e =>
                       console.log(
-                        `Failed to load image at index: ${index}, name: ${imageNames[index]}`,
+                        `Failed to load image at index: ${index}, name: ${item.name}`,
                         e.nativeEvent.error,
                       )
                     }
                   />
+                  {item.description && (
+                    <Text style={styles.imageDescription}>
+                      {item.description}
+                    </Text>
+                  )}
                 </View>
               ))}
             </ScrollView>
@@ -385,6 +510,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: isFoldable ? height * 0.02 : height * 0.017,
     marginBottom: 5,
+    padding: 5,
   },
   imageCard: {
     marginBottom: height * 0.02,
@@ -481,5 +607,32 @@ const styles = StyleSheet.create({
   thumbnailImage: {
     width: '100%',
     height: '100%',
+  },
+  imageDescription: {
+    fontSize: isFoldable ? height * 0.018 : height * 0.015,
+    color: '#333',
+    marginTop: height * 0.015,
+    paddingHorizontal: 10,
+    lineHeight: isFoldable ? height * 0.025 : height * 0.022,
+  },
+  scrollToTopButton: {
+    position: 'absolute',
+    top: height * 0.75,
+    right: 20,
+    backgroundColor: '#007bff',
+    width: 55,
+    height: 55,
+    borderRadius: 23,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 999,
   },
 });
