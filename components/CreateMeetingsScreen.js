@@ -353,7 +353,8 @@ const CreateMeetingScreen = ({route}) => {
             style={{
               color: '#00008B',
               fontWeight: '500',
-              fontSize: isFoldable ? height * 0.017 : height * 0.016,
+              fontWeight: 'bold',
+              fontSize: isFoldable ? height * 0.018 : height * 0.017,
             }}>
             Start Time: {startTime}
           </Text>
@@ -381,7 +382,8 @@ const CreateMeetingScreen = ({route}) => {
             style={{
               color: '#00008B',
               fontWeight: '500',
-              fontSize: isFoldable ? height * 0.017 : height * 0.016,
+              fontWeight: 'bold',
+              fontSize: isFoldable ? height * 0.018 : height * 0.017,
             }}>
             Finish Time: {finishTime}
           </Text>
@@ -1048,8 +1050,8 @@ const styles = StyleSheet.create({
   },
   selectionButtonText: {
     color: '#00008B',
+    fontWeight: 'bold',
     fontSize: 16,
-    fontWeight: '500',
   },
   clientItem: {
     width: width,
