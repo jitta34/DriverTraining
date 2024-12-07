@@ -124,7 +124,7 @@ const HomeScreenContent = () => {
     setLoader(true);
     setTimeout(() => {
       if (id === 1) {
-        navigation.navigate('WriteNote');
+        navigation.navigate('Video');
       } else if (id === 3) {
         navigation.navigate('UserDetailsScreen');
       } else if (id === 2) {
