@@ -241,10 +241,10 @@ const CreateMeetingScreen = ({route}) => {
     try {
       const newMeeting = {
         title: title,
-        client: {
+        clients: [{
           name: selectedClient.name,
           mobile: selectedClient.mobile,
-        },
+        }],
         description: description,
         date: moment(initialDate).format('YYYY-MM-DD'),
         time: startTime,
