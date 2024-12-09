@@ -64,6 +64,7 @@ import CreateProgressReportScreen from './components/CreateProgressReportScreen'
 import ProgressDetailsScreen from './components/ProgressDetailsScreen';
 import EditProgressReportScreen from './components/EditProgressReportScreen';
 import HighwayCodeScreen from './components/HighwayCodeScreen';
+import PdfListScreen from './components/PdfListScreen';
 
 const {width, height} = Dimensions.get('window');
 
@@ -292,6 +293,7 @@ const App = () => {
             component={LoginScreen}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="PdfList" component={PdfListScreen} />
           <Stack.Screen
             name="Paywall"
             component={Paywall}

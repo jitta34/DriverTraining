@@ -35,6 +35,7 @@ import MeetingDetailsScreen from './MeetingDetailsScreen';
 import InstructionScreen from './InstructionScreen';
 import HighwayCodeScreen from './HighwayCodeScreen';
 import CalendarScreen from './CalendarScreen';
+import PdfListScreen from './PdfListScreen';
 
 // Get the screen's width and height
 const {width, height} = Dimensions.get('window');
@@ -134,7 +135,7 @@ const HomeScreenContent = () => {
       } else if (id === 5) {
         navigation.navigate('ProgressReport');
       } else if (id === 6) {
-        navigation.navigate('HighwayCode');
+        navigation.navigate('PdfList');
       }
       setLoader(false);
     }, 5);
