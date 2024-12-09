@@ -17,6 +17,12 @@ const {width, height} = Dimensions.get('window');
 
 const isFoldable = height >= 550 && height <= 790;
 
+const MEETING_COLORS = {
+  DEFAULT: '#1E90FF', // Blue
+  PAID: '#32CD32', // Green
+  TEST_DAY: '#FF4500', // Red-Orange
+};
+
 export default function CalendarScreen({navigation, route}) {
   const [meetings, setMeetings] = useState([]);
   const [clientName, setClientName] = useState('');
@@ -62,6 +68,7 @@ export default function CalendarScreen({navigation, route}) {
               meetingTitle: item.title,
               creator: item.creator,
               description: item.description,
+              meetingType: item.meetingType || 'DEFAULT',
             },
           ];
         });
@@ -160,6 +167,15 @@ export default function CalendarScreen({navigation, route}) {
     closeMenu();
   };
 
+  const getEventCellStyle = (event: any) => {
+    return {
+      backgroundColor:
+        MEETING_COLORS[event.meetingType] || MEETING_COLORS.DEFAULT,
+      borderRadius: 5,
+      padding: 4,
+    };
+  };
+
   return (
     <Provider>
       <View style={{flex: 1, paddingTop: 10, backgroundColor: 'white'}}>
@@ -232,6 +248,7 @@ export default function CalendarScreen({navigation, route}) {
             onSwipeEnd={handleSwipe}
             weekNumberPrefix="Week"
             allDayEventCellStyle={styles.allDayEventCellStyle}
+            eventCellStyle={getEventCellStyle}
           />
         </View>
       </View>
@@ -317,5 +334,17 @@ const styles = StyleSheet.create({
   viewButton: {
     padding: 8,
     marginLeft: 10,
+  },
+  eventCell: {
+    padding: 4,
+    borderRadius: 5,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
 });
