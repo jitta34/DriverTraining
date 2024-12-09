@@ -14,6 +14,7 @@
 		352CBCE378D0FE14635F2CF9 /* Pods_onetooneappmain_onetooneappmainTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275D20E6BD4B53F787C5CA9C /* Pods_onetooneappmain_onetooneappmainTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C9BEE2F1E8761F404EABEE3A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D5F128FE5C8FBB8ADF2490AE /* PrivacyInfo.xcprivacy */; };
+		F2C747CF2D06F03800DF3F44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2C747CE2D06F03800DF3F44 /* GoogleService-Info.plist */; };
 		F8A6D3F3CA0130B542F23EE2 /* Pods_onetooneappmain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BBB2076E4B57932F701E67B /* Pods_onetooneappmain.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,8 +46,9 @@
 		7BBB2076E4B57932F701E67B /* Pods_onetooneappmain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_onetooneappmain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = onetooneappmain/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-onetooneappmain-onetooneappmainTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onetooneappmain-onetooneappmainTests.release.xcconfig"; path = "Target Support Files/Pods-onetooneappmain-onetooneappmainTests/Pods-onetooneappmain-onetooneappmainTests.release.xcconfig"; sourceTree = "<group>"; };
-		D5F128FE5C8FBB8ADF2490AE /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = onetooneappmain/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D5F128FE5C8FBB8ADF2490AE /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = onetooneappmain/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F2C747CE2D06F03800DF3F44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F2C747CE2D06F03800DF3F44 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* onetooneappmain */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* onetooneappmainTests */,
@@ -225,6 +228,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				F28EE7D72D06DE95009D57A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -248,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				F2C747CF2D06F03800DF3F44 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				C9BEE2F1E8761F404EABEE3A /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -486,7 +493,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AA8G5WM8AG;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = onetooneappmain/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -514,7 +521,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AA8G5WM8AG;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = onetooneappmain/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -739,6 +746,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F28EE7D72D06DE95009D57A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
