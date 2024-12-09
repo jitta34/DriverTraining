@@ -293,7 +293,11 @@ const App = () => {
             component={LoginScreen}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="PdfList" component={PdfListScreen} />
+          <Stack.Screen
+            name="PdfList"
+            component={PdfListScreen}
+            options={{headerShown: false}}
+          />
           <Stack.Screen
             name="Paywall"
             component={Paywall}
