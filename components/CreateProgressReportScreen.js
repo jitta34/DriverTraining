@@ -45,40 +45,46 @@ const CreateProgressReportScreen = ({navigation}) => {
     driver_name: '',
     driver_email: '',
     date_of_lesson: new Date(),
-    cockpit_checks: 1,
-    safety_checks: 1,
-    controls_and_instruments: 1,
-    moving_away_and_stopping: 1,
-    safe_positioning: 1,
-    mirrors_vision_and_use: 1,
-    signals: 1,
-    anticipation_and_planning: 1,
-    use_of_speed: 1,
+    cockpit_checks: 0,
+    controls: 0,
+    moving_off: 0,
+    stopping: 0,
+    changing_gear: 0,
+    safe_positioning: 0,
+    mirrors_vision_and_use: 0,
+    steering: 0,
+    signals: 0,
+    anticipation_and_planning: 0,
+    use_of_speed: 0,
     other_traffic: {
-      meeting_traffic: 1,
-      crossing_traffic: 1,
-      overtaking: 1,
+      meeting_traffic: 0,
+      crossing_traffic: 0,
+      overtaking: 0,
     },
     junctions: {
-      turn_left: 1,
-      turn_right: 1,
-      emerge: 1,
+      turn_left: 0,
+      turn_right: 0,
+      emerging_left: 0,
+      emerge_right: 0,
+      cross_roads: 0,
     },
-    roundabouts: 1,
-    pedestrian_crossings: 1,
-    dual_carriageways: 1,
-    turning_the_vehicle_around: 1,
+    roundabouts_left: 0,
+    roundabouts_right: 0,
+    roundabouts_ahaed: 0,
+    pedestrian_crossings: 0,
+    dual_carriageways: 0,
+    turning_the_vehicle_around: 0,
     reversing: {
-      right_side_reverse: 1,
-      forward_bay_park: 1,
-      reverse_bay_park: 1,
+      right_side_reverse: 0,
+      forward_bay_park: 0,
+      reverse_bay_park: 0,
     },
     parking: {
-      parallel_parking: 1,
+      parallel_parking: 0,
     },
-    emergency_stop: 1,
-    darkness: 1,
-    weather_conditions: 1,
+    emergency_stop: 0,
+    darkness: 0,
+    weather_conditions: 0,
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -169,24 +175,29 @@ const CreateProgressReportScreen = ({navigation}) => {
               label="Cockpit Checks"
               value={formData.cockpit_checks}
               onChange={value => updateFormData('cockpit_checks', value)}
+              />
+              <ScoreSelector
+                label="Controls"
+                value={formData.controls}
+                onChange={value => updateFormData('controls', value)}
+              />
+            <ScoreSelector
+              label="Moving Off "
+              value={formData.moving_off}
+              onChange={value => updateFormData('moving_off', value)}
             />
             <ScoreSelector
-              label="Safety Checks"
-              value={formData.safety_checks}
-              onChange={value => updateFormData('safety_checks', value)}
-            />
-            <ScoreSelector
-              label="Controls & Instruments"
-              value={formData.controls_and_instruments}
+              label="Stopping"
+              value={formData.stopping}
               onChange={value =>
-                updateFormData('controls_and_instruments', value)
+                updateFormData('stopping', value)
               }
             />
             <ScoreSelector
-              label="Moving Away & Stopping"
-              value={formData.moving_away_and_stopping}
+              label="Changing Gear"
+              value={formData.changing_gear}
               onChange={value =>
-                updateFormData('moving_away_and_stopping', value)
+                updateFormData('changing_gear', value)
               }
             />
           </View>
@@ -198,13 +209,20 @@ const CreateProgressReportScreen = ({navigation}) => {
               value={formData.safe_positioning}
               onChange={value => updateFormData('safe_positioning', value)}
             />
+            
             <ScoreSelector
               label="Mirrors Vision & Use"
               value={formData.mirrors_vision_and_use}
               onChange={value =>
                 updateFormData('mirrors_vision_and_use', value)
               }
-            />
+            /><ScoreSelector
+            label="Steering"
+            value={formData.steering}
+            onChange={value =>
+              updateFormData('steering', value)
+            }
+          />
             <ScoreSelector
               label="Signals"
               value={formData.signals}
@@ -266,20 +284,43 @@ const CreateProgressReportScreen = ({navigation}) => {
                 updateFormData('junctions', value, 'turn_right')
               }
             />
+              <ScoreSelector
+              label="Emerging Left"
+              value={formData.junctions.emerging_left}
+              onChange={value =>
+                updateFormData('junctions', value, 'emerging_left')
+              }
+            />
             <ScoreSelector
-              label="Emerge"
-              value={formData.junctions.emerge}
-              onChange={value => updateFormData('junctions', value, 'emerge')}
+              label="Emerge Right"
+              value={formData.junctions.emerge_right}
+              onChange={value => updateFormData('junctions', value, 'emerge_right')}
+            />
+              <ScoreSelector
+              label="Cross Roads"
+              value={formData.junctions.cross_roads}
+              onChange={value => updateFormData('junctions', value, 'cross_roads')}
             />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Road Features</Text>
             <ScoreSelector
-              label="Roundabouts"
-              value={formData.roundabouts}
-              onChange={value => updateFormData('roundabouts', value)}
+              label="Roundabouts Left"
+              value={formData.roundabouts_left}
+              onChange={value => updateFormData('roundabouts_left', value)}
             />
+             <ScoreSelector
+              label="Roundabouts Right"
+              value={formData.roundabouts_right}
+              onChange={value => updateFormData('roundabouts_right', value)}
+            />
+             <ScoreSelector
+              label="Roundabouts Ahead"
+              value={formData.roundabouts_ahead}
+              onChange={value => updateFormData('roundabouts_ahead', value)}
+            />
+            
             <ScoreSelector
               label="Pedestrian Crossings"
               value={formData.pedestrian_crossings}
@@ -293,7 +334,7 @@ const CreateProgressReportScreen = ({navigation}) => {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Maneuvers</Text>
+            <Text style={styles.sectionTitle}>Manoeuvers</Text>
             <ScoreSelector
               label="Turning Vehicle Around"
               value={formData.turning_the_vehicle_around}

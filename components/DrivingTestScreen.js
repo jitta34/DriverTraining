@@ -43,21 +43,21 @@ const DrivingTestScreen = ({ navigation, route }) => {
         {loading1 ? (
           <ActivityIndicator size="small" color="darkblue" /> // Show loader when loading
         ) : (
-          <Text style={styles.buttonText}>Driving Test Form 1</Text>
+          <Text style={styles.buttonText}>New DL25A Test Form</Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handlePress2} disabled={loading2}>
         {loading2 ? (
           <ActivityIndicator size="small" color="darkblue" /> // Show loader when loading
         ) : (
-          <Text style={styles.buttonText}>Driving Test Form 2</Text>
+          <Text style={styles.buttonText}>ADI Part 3 Test Form</Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handlePress3} disabled={loading3}>
         {loading3 ? (
           <ActivityIndicator size="small" color="darkblue" /> // Show loader when loading
         ) : (
-          <Text style={styles.buttonText}>Driving Test Form 3</Text>
+          <Text style={styles.buttonText}>Old DL25A Test Form</Text>
         )}
       </TouchableOpacity>
     </View>
