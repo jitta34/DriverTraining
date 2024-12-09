@@ -193,6 +193,7 @@ export default function InstructionScreen() {
   const slideAnim = useSharedValue(width);
   const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
   const [backgroundUrl, setBackgroundUrl] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const index = parseInt(search);
@@ -240,7 +241,7 @@ export default function InstructionScreen() {
     signatureRef.current.redo();
   };
 
-  console.log(height);
+  console.log('backgroundUrl', backgroundUrl);
 
   const toggleBackgroundPicker = () => {
     const newValue = !showBackgroundPicker;
@@ -251,6 +252,7 @@ export default function InstructionScreen() {
   };
 
   const selectBackground = item => {
+    setSelectedImage(item);
     if (Platform.OS === 'web') {
       const resolvedImage = Image.resolveAssetSource(item.image);
       setBackgroundUrl(resolvedImage.uri || item.image);
@@ -299,6 +301,7 @@ export default function InstructionScreen() {
         {isDrawing ? (
           <View style={styles.fullScreenOverlay}>
             <Signature
+              key={selectedImage ? selectedImage.name : 'default'}
               bgHeight={height * 0.8}
               overlayHeight={height}
               ref={signatureRef}
@@ -366,8 +369,15 @@ export default function InstructionScreen() {
                       onPress={() => {
                         selectBackground(item);
                         toggleBackgroundPicker();
+                        if (signatureRef.current) {
+                          signatureRef.current.clearSignature();
+                        }
                       }}
-                      style={styles.backgroundThumbnail}>
+                      style={[
+                        styles.backgroundThumbnail,
+                        selectedImage?.name === item.name &&
+                          styles.selectedThumbnail,
+                      ]}>
                       <Image
                         source={item.image}
                         style={styles.thumbnailImage}
@@ -634,5 +644,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     zIndex: 999,
+  },
+  selectedThumbnail: {
+    borderColor: '#007bff',
+    borderWidth: 2,
   },
 });
