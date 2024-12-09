@@ -28,6 +28,12 @@ import {Calendar} from 'react-native-big-calendar';
 const {width, height} = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
 
+const MeetingType = {
+  DEFAULT: 'DEFAULT',
+  PAID: 'PAID',
+  TEST_DAY: 'TEST_DAY',
+};
+
 const replacePlaceholders = (template, meeting) => {
   return template
     .replace('{{creator}}', meeting.creator)
@@ -218,6 +224,8 @@ const CreateMeetingScreen = ({route}) => {
   const [previousClientsModalVisible, setPreviousClientsModalVisible] =
     useState(false);
 
+  const [meetingType, setMeetingType] = useState(MeetingType.DEFAULT);
+
   const handleCreateMeeting = async () => {
     if (!selectedClient) {
       Alert.alert('Error', 'Please select a client for the meeting');
@@ -241,16 +249,19 @@ const CreateMeetingScreen = ({route}) => {
     try {
       const newMeeting = {
         title: title,
-        clients: [{
-          name: selectedClient.name,
-          mobile: selectedClient.mobile,
-        }],
+        clients: [
+          {
+            name: selectedClient.name,
+            mobile: selectedClient.mobile,
+          },
+        ],
         description: description,
         date: moment(initialDate).format('YYYY-MM-DD'),
         time: startTime,
         finishTime: finishTime,
         creator: `${userDetails.firstName} ${userDetails.lastName}`,
         highlightedDateTime: `${initialDate.toISOString()} ${startTime} - ${finishTime}`,
+        meetingType: meetingType,
       };
 
       await firestore()
@@ -352,7 +363,6 @@ const CreateMeetingScreen = ({route}) => {
           <Text
             style={{
               color: '#00008B',
-              fontWeight: '500',
               fontWeight: 'bold',
               fontSize: isFoldable ? height * 0.018 : height * 0.017,
             }}>
@@ -381,7 +391,6 @@ const CreateMeetingScreen = ({route}) => {
           <Text
             style={{
               color: '#00008B',
-              fontWeight: '500',
               fontWeight: 'bold',
               fontSize: isFoldable ? height * 0.018 : height * 0.017,
             }}>
@@ -466,6 +475,44 @@ const CreateMeetingScreen = ({route}) => {
           onChangeText={setDescription}
           placeholderTextColor="gray"
         />
+
+        <View style={styles.meetingTypeContainer}>
+          <Text style={styles.label}>Meeting Type</Text>
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => setMeetingType(MeetingType.PAID)}>
+              <View style={styles.checkbox}>
+                {meetingType === MeetingType.PAID && (
+                  <View style={styles.checked} />
+                )}
+              </View>
+              <Text style={styles.checkboxLabel}>Paid</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => setMeetingType(MeetingType.TEST_DAY)}>
+              <View style={styles.checkbox}>
+                {meetingType === MeetingType.TEST_DAY && (
+                  <View style={styles.checked} />
+                )}
+              </View>
+              <Text style={styles.checkboxLabel}>Test Day</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => setMeetingType(MeetingType.DEFAULT)}>
+              <View style={styles.checkbox}>
+                {meetingType === MeetingType.DEFAULT && (
+                  <View style={styles.checked} />
+                )}
+              </View>
+              <Text style={styles.checkboxLabel}>Default</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <TouchableOpacity
           style={styles.createButton}
@@ -1089,6 +1136,38 @@ const styles = StyleSheet.create({
     color: '#666',
     marginVertical: height * 0.01,
     fontSize: isFoldable ? height * 0.018 : height * 0.014,
+  },
+  meetingTypeContainer: {
+    marginVertical: height * 0.02,
+  },
+  checkboxContainer: {
+    marginTop: height * 0.01,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: height * 0.008,
+  },
+  checkbox: {
+    width: width * 0.05,
+    height: width * 0.05,
+    borderWidth: 2,
+    borderColor: 'darkblue',
+    borderRadius: 4,
+    marginRight: width * 0.03,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checked: {
+    width: width * 0.03,
+    height: width * 0.03,
+    backgroundColor: 'darkblue',
+    borderRadius: 2,
+  },
+  checkboxLabel: {
+    fontSize: isFoldable ? height * 0.02 : height * 0.016,
+    color: 'black',
+    fontWeight: '500',
   },
 });
 
