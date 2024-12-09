@@ -12,13 +12,12 @@ import Pdf from 'react-native-pdf';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RNFetchBlob from 'react-native-blob-util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 
 const {width, height} = Dimensions.get('window');
 
-const pdfURL =
-  'https://drive.google.com/uc?export=download&id=1hRjiR_APlb2OjGPARAi_OA8tkgwoTSPn';
-
-const HighwayCodeScreen = ({navigation}) => {
+const HighwayCodeScreen = ({navigation, route}) => {
+  const {pdfUrl, name} = route.params;
   const [loading, setLoading] = useState(true);
   const pdfRef = useRef(null);
   const [pdfPath, setPdfPath] = useState(null);
@@ -26,7 +25,7 @@ const HighwayCodeScreen = ({navigation}) => {
   useLayoutEffect(() => {
     const downloadAndCachePDF = async () => {
       try {
-        const cachedPath = await AsyncStorage.getItem('highwayCodePdfPath');
+        const cachedPath = await AsyncStorage.getItem(name);
         if (cachedPath) {
           setPdfPath(cachedPath);
           return;
@@ -35,9 +34,9 @@ const HighwayCodeScreen = ({navigation}) => {
         const response = await RNFetchBlob.config({
           fileCache: true,
           appendExt: 'pdf',
-        }).fetch('GET', pdfURL);
+        }).fetch('GET', pdfUrl);
 
-        await AsyncStorage.setItem('highwayCodePdfPath', response.path());
+        await AsyncStorage.setItem(name, response.path());
         setPdfPath(response.path());
       } catch (error) {
         console.error('Error downloading PDF:', error);
@@ -45,17 +44,23 @@ const HighwayCodeScreen = ({navigation}) => {
     };
 
     downloadAndCachePDF();
-  }, []);
+  }, [name, pdfUrl]);
 
   const source = pdfPath
     ? {uri: `file://${pdfPath}`, cache: true}
     : {
-        uri: pdfURL,
+        uri: pdfUrl,
         cache: true,
       };
 
   const goToPage = pageNumber => {
     pdfRef.current?.setPage(pageNumber);
+  };
+
+  const scrollToTop = () => {
+    if (pdfRef.current) {
+      pdfRef.current.setPage(1);
+    }
   };
 
   return (
@@ -64,7 +69,7 @@ const HighwayCodeScreen = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.header}>Highway Code</Text>
+        <Text style={styles.header}>{name}</Text>
       </View>
 
       <View style={styles.pdfContainer}>
@@ -97,6 +102,11 @@ const HighwayCodeScreen = ({navigation}) => {
           enablePaging={true}
           style={styles.pdf}
         />
+        <TouchableOpacity
+          style={styles.scrollToTopButton}
+          onPress={scrollToTop}>
+          <IconFA name="arrow-up" size={24} color="white" />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -122,6 +132,7 @@ const styles = StyleSheet.create({
   },
   pdfContainer: {
     flex: 1,
+    position: 'relative',
   },
   loadingContainer: {
     position: 'absolute',
@@ -138,6 +149,26 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     height: height,
+  },
+  scrollToTopButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#007bff',
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 999,
   },
 });
 
