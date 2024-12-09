@@ -24,7 +24,7 @@ export default function HelpScreen() {
         <View style={styles.contactContainer}>
           <Text style={styles.contactHeader}>Phone</Text>
           <TouchableOpacity onPress={() => Linking.openURL('tel:+911234567890')}>
-            <Text style={styles.contactText}>+44 7799200500</Text>
+            <Text style={styles.contactText}>+44 7778200600</Text>
           </TouchableOpacity>
 
           <Text style={styles.contactHeader}>Email</Text>
