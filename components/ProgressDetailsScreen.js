@@ -240,30 +240,20 @@ const ProgressDetailsScreen = ({navigation, route}) => {
 
             <div class="section">
               <h2>Basic Controls</h2>
-              ${formatScoreSection('Cockpit Checks', report.cockpit_checks)}
-              ${formatScoreSection('Safety Checks', report.safety_checks)}
-              ${formatScoreSection(
-                'Controls & Instruments',
-                report.controls_and_instruments,
-              )}
-              ${formatScoreSection(
-                'Moving Away & Stopping',
-                report.moving_away_and_stopping,
-              )}
+              ${formatScoreSection('Cockpit Checks', report.cockpit_checks,)}
+              ${formatScoreSection('Controls', report.Controls,)}
+              ${formatScoreSection('Moving Off',report.moving_off,)}
+              ${formatScoreSection('Stopping',report.stopping,)}
+               ${formatScoreSection('Changing Gear',report.changing_gear,)}
             </div>
 
             <div class="section">
               <h2>Driving Skills</h2>
               ${formatScoreSection('Safe Positioning', report.safe_positioning)}
-              ${formatScoreSection(
-                'Mirrors Vision & Use',
-                report.mirrors_vision_and_use,
-              )}
+              ${formatScoreSection('Mirrors Vision & Use',report.mirrors_vision_and_use,)}
+              ${formatScoreSection('Steering', report.steering)}
               ${formatScoreSection('Signals', report.signals)}
-              ${formatScoreSection(
-                'Anticipation & Planning',
-                report.anticipation_and_planning,
-              )}
+              ${formatScoreSection('Anticipation & Planning',report.anticipation_and_planning,)}
               ${formatScoreSection('Use of Speed', report.use_of_speed)}
             </div>
 

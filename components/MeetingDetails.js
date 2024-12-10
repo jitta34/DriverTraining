@@ -35,7 +35,7 @@ const MeetingDetails = () => {
   //     meeting.time
   //   } has been successfully booked. The End time of meeting is ${
   //     meeting.finishTime
-  //   }. To reschedule please contact ${meeting.creator}. (Sent via One2One app)`,
+  //   }. To reschedule please contact ${meeting.creator}. (Sent via Appoint-Fix app)`,
   // );
   const [isEditing, setIsEditing] = useState(false);
   const [startTime, setStartTime] = useState(meeting.time);
@@ -47,7 +47,7 @@ const MeetingDetails = () => {
 
 
   // const [defaultSmsBody, setDefaultSmsBody] = useState(
-  //   `Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please contact ${meeting.creator}. (Sent via One2One-Appointfix app)`
+  //   `Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please contact ${meeting.creator}. (Sent via Appoint-Fix app)`
   // );
 
   // const handleSendSmsNavigation = () => {
@@ -58,10 +58,10 @@ const MeetingDetails = () => {
   //   });
   // };
 
-  // const defaultSmsBody = `Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please contact ${meeting.creator}. (Sent via One2One-Appointfix app)`;
+  // const defaultSmsBody = `Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please contact ${meeting.creator}. (Sent via Appoint-Fix app)`;
 
   const [smsBody, setSmsBody] = useState(
-    `Your appointment with ${meeting.creator} on ${moment(meeting.date).format('dddd, MMMM Do YYYY')} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. (Sent via One2One app)`
+    `Your appointment with ${meeting.creator} on ${moment(meeting.date).format('dddd, MMMM Do YYYY')} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. (Sent via Appoint-Fix app)`
   );
 
   const handleSendSmsNavigation = () => {
@@ -539,7 +539,7 @@ export default MeetingDetails;
 //       meeting.time
 //     } has been successfully booked. The End time of meeting is ${
 //       meeting.finishTime
-//     }. To reschedule please call ${meeting.creator}. (Sent via One2One app)`,
+//     }. To reschedule please call ${meeting.creator}. (Sent via Appoint-Fix app)`,
 //   );
 //   const [isEditing, setIsEditing] = useState(false);
 //   const [startTime, setStartTime] = useState(meeting.time);

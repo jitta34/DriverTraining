@@ -190,7 +190,7 @@ const formatPhoneNumber = (number) => {
         });
   
       // Set the default SMS body
-      const defaultSmsBody = `Your appointment with ${userDetails.firstName} ${userDetails.lastName} on ${initialDate.toDateString()} at ${initialTime} has been successfully booked. The End time of meeting is ${finishTime}. To reschedule please call ${userDetails.phoneNumber}. (Sent via One2One app)`;
+      const defaultSmsBody = `Your appointment with ${userDetails.firstName} ${userDetails.lastName} on ${initialDate.toDateString()} at ${initialTime} has been successfully booked. The End time of meeting is ${finishTime}. To reschedule please call ${userDetails.phoneNumber}. (Sent via Appoint-Fix app)`;
       setSmsBody(defaultSmsBody);
   
       // Show the modal

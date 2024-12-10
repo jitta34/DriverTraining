@@ -484,7 +484,7 @@ const CreateMeetingScreen = ({route}) => {
               onPress={() => setMeetingType(MeetingType.PAID)}>
               <View style={styles.checkbox}>
                 {meetingType === MeetingType.PAID && (
-                  <View style={styles.checked} />
+                  <View style={[styles.checked,{backgroundColor: 'green'}]} />
                 )}
               </View>
               <Text style={styles.checkboxLabel}>Paid</Text>
@@ -495,7 +495,7 @@ const CreateMeetingScreen = ({route}) => {
               onPress={() => setMeetingType(MeetingType.TEST_DAY)}>
               <View style={styles.checkbox}>
                 {meetingType === MeetingType.TEST_DAY && (
-                  <View style={styles.checked} />
+                 <View style={[styles.checked,{backgroundColor: 'red'}]} />
                 )}
               </View>
               <Text style={styles.checkboxLabel}>Test Day</Text>
@@ -506,7 +506,7 @@ const CreateMeetingScreen = ({route}) => {
               onPress={() => setMeetingType(MeetingType.DEFAULT)}>
               <View style={styles.checkbox}>
                 {meetingType === MeetingType.DEFAULT && (
-                  <View style={styles.checked} />
+                   <View style={[styles.checked,{backgroundColor: 'blue'}]} />
                 )}
               </View>
               <Text style={styles.checkboxLabel}>Default</Text>
@@ -1149,7 +1149,7 @@ const styles = StyleSheet.create({
     marginVertical: height * 0.008,
   },
   checkbox: {
-    width: width * 0.05,
+    width: width * 0.07,
     height: width * 0.05,
     borderWidth: 2,
     borderColor: 'darkblue',
@@ -1159,13 +1159,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checked: {
-    width: width * 0.03,
+    width: width * 0.05,
     height: width * 0.03,
-    backgroundColor: 'darkblue',
+    // backgroundColor: 'darkblue',
     borderRadius: 2,
   },
   checkboxLabel: {
-    fontSize: isFoldable ? height * 0.02 : height * 0.016,
+    fontSize: isFoldable ? height * 0.02 : height * 0.017,
     color: 'black',
     fontWeight: '500',
   },

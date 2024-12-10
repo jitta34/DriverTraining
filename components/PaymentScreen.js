@@ -115,10 +115,10 @@
 //         <TouchableOpacity onPress={() => navigation.navigate('SIGN UP')}>
 //           <Image source={require('../assets/backbtn.png')} style={styles.backButton} />
 //         </TouchableOpacity>
-//         <Text style={styles.title}>One2One-Appointfix</Text>
+//         <Text style={styles.title}>Appoint-Fix</Text>
 //         <Text style={styles.title}>Subscription</Text>
 //         <Text style={styles.listItem}>
-//           To enjoy the full range of our services, please consider subscribing to One2One-Appointfix.
+//           To enjoy the full range of our services, please consider subscribing to Appoint-Fix.
 //         </Text>
 //         <Text style={styles.listItem}>Length of subscription: 1 month (Auto-Renewable with option to cancel)</Text>
 //         <Text style={styles.listItem}>Original Price of subscription: 4.99 GBP per Month</Text>

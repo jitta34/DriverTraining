@@ -248,7 +248,7 @@ useEffect(() => {
   //   if (meeting) {
   //     setSelectedMeeting(meeting);
   //     setClientName(meeting.clients[3]); // Set the client's name
-  //     setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via One2One app)`);
+  //     setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via Appoint-Fix app)`);
   //     setModalVisible(true);
   //   } else {
   //     if (!modalVisible) {
@@ -269,7 +269,7 @@ useEffect(() => {
     if (meeting) {
       setSelectedMeeting(meeting);
       setClientName(meeting.clients[3]); // Set the client's name
-      setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via One2One app)`);
+      setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via Appoint-Fix app)`);
       setModalVisible(true);
     } else {
       if (!modalVisible) {
@@ -740,7 +740,7 @@ useEffect(() => {
   //   if (meeting) {
   //     setSelectedMeeting(meeting);
   //     setClientName(meeting.clients[3]); // Set the client's name
-  //     setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via One2One app)`);
+  //     setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via Appoint-Fix app)`);
   //     setModalVisible(true);
   //   } else {
   //     if (!modalVisible) {
@@ -794,7 +794,7 @@ useEffect(() => {
     if (meeting) {
       setSelectedMeeting(meeting);
       setClientName(meeting.clients[3]); // Set the client's name
-      setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via One2One app)`);
+      setSmsBody(`Reminder: Your appointment with ${meeting.creator} on ${new Date(meeting.date).toDateString()} at ${meeting.time} has been successfully booked. The End time of meeting is ${meeting.finishTime}. To reschedule please call ${meeting.creator}. (Sent via Appoint-Fix app)`);
       setModalVisible(true);
     } else {
       if (!modalVisible) {

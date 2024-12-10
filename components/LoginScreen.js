@@ -159,7 +159,7 @@ const LoginScreen = () => {
         </View>
         <View style={styles.contentContainer}>
           <View style={styles.intialContainer}>
-            <Text style={styles.greeting}>Welcome to One2One App</Text>
+            <Text style={styles.greeting}>Welcome to Appoint-Fix</Text>
             <Text style={styles.subheading}>
               Please sign in with your account
             </Text>

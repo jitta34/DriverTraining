@@ -23,7 +23,7 @@ const SmsTemplateScreen = ({ navigation }) => {
           const { template } = JSON.parse(storedTemplateData);
           setTemplate(template);
         } else {
-          setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+          setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
         }
       } catch (error) {
         console.log('Failed to load SMS template from storage', error);
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
 //           const { template } = JSON.parse(storedTemplateData);
 //           setTemplate(template);
 //         } else {
-//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
 //         }
 //       } catch (error) {
 //         console.log('Failed to load SMS template from storage', error);
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
 //           const { template } = JSON.parse(storedTemplateData);
 //           setTemplate(template);
 //         } else {
-//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
 //         }
 //       } catch (error) {
 //         console.log('Failed to load SMS template from storage', error);
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
 //             const { template } = JSON.parse(storedTemplateData);
 //             setTemplate(template);
 //           } else {
-//             setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+//             setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
 //           }
 //         } catch (error) {
 //           console.log('Failed to load SMS template from storage', error);
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
 //           const { template } = JSON.parse(storedTemplateData);
 //           setTemplate(template);
 //         } else {
-//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
 //         }
 //       } catch (error) {
 //         console.log('Failed to load SMS template from storage', error);
@@ -610,7 +610,7 @@ export default SmsTemplateScreen;
 //           const { template } = JSON.parse(storedTemplateData);
 //           setTemplate(template);
 //         } else {
-//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`);
+//           setTemplate(`Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`);
 //         }
 //       } catch (error) {
 //         console.log('Failed to load SMS template from storage', error);

@@ -12,7 +12,7 @@ import auth from '@react-native-firebase/auth';
 const { width, height } = Dimensions.get('window');
 const isFoldable = height >= 550 && height <= 790;
 
-const defaultSmsBody = `Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via One2One app)`;
+const defaultSmsBody = `Your appointment with {{creator}} on {{date}} at {{startTime}} has been successfully booked. The End time of meeting is {{finishTime}}. (Sent via Appoint-Fix app)`;
 
 
 const replacePlaceholders = (body, meeting) => {

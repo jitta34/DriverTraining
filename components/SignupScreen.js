@@ -299,7 +299,7 @@ const SignupScreen = () => {
         <Text style={styles.headerTitle}>SIGN UP</Text>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.greeting}>Welcome to One2One App</Text>
+        <Text style={styles.greeting}>Welcome to Appoint-Fix App</Text>
         <View style={styles.inputContainer}>
           <Image source={require('../assets/user.png')} style={styles.icon} />
           <TextInput

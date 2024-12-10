@@ -173,6 +173,7 @@ export default function CalendarScreen({navigation, route}) {
         MEETING_COLORS[event.meetingType] || MEETING_COLORS.DEFAULT,
       borderRadius: 5,
       padding: 4,
+
     };
   };
 
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: isFoldable ? height * 0.027 : height * 0.021,
+    fontSize: isFoldable ? height * 0.027 : height * 0.025,
     fontWeight: 'bold',
     alignSelf: 'center',
     color: 'black',
@@ -347,4 +348,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
+  rbcCalendar: {
+    fontSize: 10,
+  }
 });
