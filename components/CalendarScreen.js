@@ -47,31 +47,50 @@ export default function CalendarScreen({navigation, route}) {
         }));
 
         setMeetings(meetings);
-        const newData = meetings?.flatMap(item => {
-          let clientsText = '';
-          if (Array.isArray(item.clients) && item.clients.length > 0) {
-            const clientNames = item.clients.map(client => client.name);
-            if (clientNames.length > 2) {
-              clientsText = `${clientNames[0]}, ${clientNames[1]}...`;
-            } else {
-              clientsText = clientNames.join(', ');
+        const newData = meetings
+          ?.filter(item => item.date && item.time && item.finishTime)
+          .flatMap(item => {
+            let clientsText = '';
+            if (Array.isArray(item.clients) && item.clients.length > 0) {
+              const clientNames = item.clients.map(client => client.name);
+              if (clientNames.length > 2) {
+                clientsText = `${clientNames[0]}, ${clientNames[1]}...`;
+              } else {
+                clientsText = clientNames.join(', ');
+              }
             }
-          }
 
-          return [
-            {
-              title: clientsText,
-              start: moment(convertTimeToISO(item.date, item?.time)),
-              end: moment(convertTimeToISO(item.date, item?.finishTime)),
-              key: item?.key,
-              clients: item.clients,
-              meetingTitle: item.title,
-              creator: item.creator,
-              description: item.description,
-              meetingType: item.meetingType || 'DEFAULT',
-            },
-          ];
-        });
+            try {
+              const startMoment = moment(
+                `${item.date} ${item.time}`,
+                'YYYY-MM-DD hh:mm A',
+              );
+              const endMoment = moment(
+                `${item.date} ${item.finishTime}`,
+                'YYYY-MM-DD hh:mm A',
+              );
+
+              if (startMoment.isValid() && endMoment.isValid()) {
+                return [
+                  {
+                    title: clientsText,
+                    start: startMoment.toDate(),
+                    end: endMoment.toDate(),
+                    key: item?.key,
+                    clients: item.clients,
+                    meetingTitle: item.title,
+                    creator: item.creator,
+                    description: item.description,
+                    meetingType: item.meetingType || 'DEFAULT',
+                  },
+                ];
+              }
+            } catch (error) {
+              console.warn('Error processing meeting:', error);
+            }
+            return [];
+          });
+
         setEvents(newData);
       });
 
@@ -82,24 +101,20 @@ export default function CalendarScreen({navigation, route}) {
   console.log('eventss', events);
 
   const convertTimeToISO = (dateString, time) => {
-    const date = moment(dateString).format('YYYY-MM-DD');
-    const combinedDateTimeString = `${date} ${time}`;
-    const parsedDateTime = moment(combinedDateTimeString, 'YYYY-MM-DD hh:mm A');
-    const isoFormat = parsedDateTime.format('YYYY-MM-DDTHH:mm:ss');
-
-    return isoFormat;
+    const dateTime = moment(`${dateString} ${time}`, 'YYYY-MM-DD hh:mm A');
+    return dateTime.toDate();
   };
 
   const event = [
     {
       title: 'Meeting',
-      start: moment('2024-06-10T01:00:00'),
-      end: moment('2024-06-10T03:15:00'),
+      start: new Date('2024-06-10T01:00:00'),
+      end: new Date('2024-06-10T03:15:00'),
     },
     {
       title: 'Coffee break',
-      start: moment('2024-06-10T06:00:00'),
-      end: moment('2024-06-10T06:30:00'),
+      start: new Date('2024-06-10T06:00:00'),
+      end: new Date('2024-06-10T06:30:00'),
     },
   ];
 
@@ -167,7 +182,7 @@ export default function CalendarScreen({navigation, route}) {
     closeMenu();
   };
 
-  const getEventCellStyle = (event: any) => {
+  const getEventCellStyle = event => {
     return {
       backgroundColor:
         MEETING_COLORS[event.meetingType] || MEETING_COLORS.DEFAULT,
