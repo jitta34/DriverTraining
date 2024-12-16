@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.onetoonepro"
+    namespace "com.drivertraining"
     defaultConfig {
-        applicationId "com.onetoonepro"
+        applicationId "com.drivertraining"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 13
