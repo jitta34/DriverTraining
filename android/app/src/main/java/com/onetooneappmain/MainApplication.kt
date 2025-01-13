@@ -1,4 +1,4 @@
-package com.onetoonepro
+package com.drivertraining
 import com.dooboolab.rniap.RNIapPackage
 
 import android.app.Application

@@ -16,7 +16,7 @@ if linkage != nil
   $RNFirebaseAsStaticFramework = true
 end
 
-target 'onetooneappmain' do
+target 'DriverTraining' do
   config = use_native_modules!
   use_frameworks! :linkage => :static
   pod 'Firebase', :modular_headers => true
@@ -36,7 +36,7 @@ target 'onetooneappmain' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'onetooneappmainTests' do
+  target 'DriverTrainingTests' do
     inherit! :complete
     # Pods for testing
   end

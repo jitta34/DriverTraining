@@ -1,4 +1,4 @@
-package com.onetoonepro
+package com.drivertraining
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity
