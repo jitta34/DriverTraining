@@ -13,8 +13,13 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firebase from '@react-native-firebase/app'
+
+
 
 const LoginScreen = ({ navigation }) => {
+  const user = firebase.auth().currentUser;
   useEffect(() => {
     async function init() {
       const has = await GoogleSignin.hasPlayServices();
@@ -38,14 +43,25 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please fill in both email and password fields.');
       return;
     }
+  
     setLoading(true);
+  
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      // Attempt to log in the user
+      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+  
+      // Save login state in AsyncStorage
+      await AsyncStorage.setItem('isLoggedIn', 'true');
+      await AsyncStorage.setItem('userEmail', userCredential.user.email);
+  
+      // Navigate to the home screen
       Alert.alert('Success', 'Logged in successfully!');
       setLoading(false);
       navigation.navigate('Home'); // Replace 'Home' with your app's main screen
     } catch (error) {
       setLoading(false);
+  
+      // Handle different error codes
       let errorMessage = '';
       if (error.code === 'auth/user-not-found') {
         errorMessage = 'No user found with this email!';
@@ -54,6 +70,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         errorMessage = error.message;
       }
+  
       Alert.alert('Login Error', errorMessage);
     }
   };
@@ -75,36 +92,65 @@ const LoginScreen = ({ navigation }) => {
         Alert.alert('Error', error.message);
       });
   };
-  const handleGoogleSignup = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      await GoogleSignin.signOut();
-      const {user, idToken} = await GoogleSignin.signIn();
+//   const handleGoogleSignup = async () => {
+//     try {
+//       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+//       await GoogleSignin.signOut();
+//       const {user, idToken} = await GoogleSignin.signIn();
       
+// console.log(user,idToken)
+//       // const userDoc = await firestore()
+//       //   .collection('users')
+//       //   .where('email', '==', user.email)
+//       //   .get();
+// // console.log(userDoc)
+//       const userCredential = await auth().signInWithCredential(
+//         auth.GoogleAuthProvider.credential(idToken),
+//       );
+// console.log(userCredential)
+//       // if (userDoc.empty) {
+//       //   await firestore().collection('users').doc(userCredential.user.uid).set({
+//       //     firstName: user.name,
+//       //     email: user.email,
+//       //     lastName: '',
+//       //     signupDate: firestore.FieldValue.serverTimestamp(),
+//       //   });
+//       // }
+//       await AsyncStorage.setItem('userLoggedIn', 'true');
+//       navigation.navigate('Home');
+//     } catch (error) {
+//       console.log('Error during sign-in:', error);
+//     }
+//   };
+const handleGoogleSignup = async () => {
+  try {
+    // Check if Google Play Services are available
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      const userDoc = await firestore()
-        .collection('users')
-        .where('email', '==', user.email)
-        .get();
+    // Log out any previously signed-in user
+    await GoogleSignin.signOut();
 
-      const userCredential = await auth().signInWithCredential(
-        auth.GoogleAuthProvider.credential(idToken),
-      );
+    // Start the Google Sign-In process
+    const { user, idToken } = await GoogleSignin.signIn();
+    console.log('Google User:', user, 'ID Token:', idToken);
 
-      if (userDoc.empty) {
-        await firestore().collection('users').doc(userCredential.user.uid).set({
-          firstName: user.name,
-          email: user.email,
-          lastName: '',
-          signupDate: firestore.FieldValue.serverTimestamp(),
-        });
-      }
-      await AsyncStorage.setItem('userLoggedIn', 'true');
-      navigation.navigate('Home');
-    } catch (error) {
-      console.log('Error during sign-in:', error);
-    }
-  };
+    // Authenticate with Firebase using the Google credentials
+    const userCredential = await auth().signInWithCredential(
+      auth.GoogleAuthProvider.credential(idToken)
+    );
+    console.log('Firebase User Credential:', userCredential);
+
+    // Store login status in AsyncStorage
+    await AsyncStorage.setItem('isLoggedIn', 'true');
+
+    // Navigate to the Home screen
+    Alert.alert('Success', 'Logged in successfully with Google!');
+    navigation.navigate('Home');
+  } catch (error) {
+    console.error('Error during Google sign-in:', error);
+    Alert.alert('Google Sign-In Error', error.message || 'Something went wrong.');
+  }
+};
 
   return (
     <KeyboardAvoidingView
@@ -112,7 +158,8 @@ const LoginScreen = ({ navigation }) => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.header}>Login</Text>
+        <Text style={styles.header}>Welcome to</Text>
+        <Text style={styles.user}> Instructor Training </Text>
         <TextInput
           style={styles.input}
           placeholder="Enter your email"
@@ -218,6 +265,10 @@ const styles = StyleSheet.create({
     color: '#007BFF',
     fontWeight: 'bold',
   },
+  user: {
+    fontSize: 20,
+    fontWeight: '600',
+  }
 });
 
 export default LoginScreen;

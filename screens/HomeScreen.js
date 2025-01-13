@@ -12,14 +12,14 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       {/* Two Cards Section */}
-      <View style={styles.cardContainer}>
+      {/* <View style={styles.cardContainer}>
         <TouchableOpacity style={styles.card}>
           <Text style={styles.cardText}>Card 1</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.card}>
           <Text style={styles.cardText}>Card 2</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Bottom Tab Navigator */}
       <View style={styles.tabContainer}>
